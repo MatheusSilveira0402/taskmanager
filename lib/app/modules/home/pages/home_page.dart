@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Builder(
         builder: (context) {
-          if (provider.loading) {
+          if (!provider.loading) {
             return Center(child: CircularProgressIndicator(),);
           }
           if (provider.tasks.isEmpty) {

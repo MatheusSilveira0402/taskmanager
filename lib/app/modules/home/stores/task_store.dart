@@ -9,7 +9,7 @@ class TaskStore {
       .from('tasks')
       .select()
       .eq('user_id', userId)
-      .order('created_at', ascending: false)
+      .order('status', ascending: false)
       .then((res) => res);
   }
 
