@@ -1,5 +1,4 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:task_manager_app/app/core/notification_service.dart';
 import 'package:task_manager_app/app/modules/home/models/task_model.dart';
 
 class TaskStore {

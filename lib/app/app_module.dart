@@ -1,5 +1,4 @@
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:task_manager_app/app/core/notification_service.dart';
 import 'package:task_manager_app/app/modules/auth/auth_module.dart';
 import 'package:task_manager_app/app/modules/home/home_module.dart';
 

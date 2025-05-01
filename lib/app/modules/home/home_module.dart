@@ -1,5 +1,4 @@
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:task_manager_app/app/core/notification_service.dart';
 import 'package:task_manager_app/app/modules/home/pages/home_page.dart';
 import 'package:task_manager_app/app/modules/home/pages/task_from_page.dart';
 import 'package:task_manager_app/app/modules/home/providers/task_provider.dart';
