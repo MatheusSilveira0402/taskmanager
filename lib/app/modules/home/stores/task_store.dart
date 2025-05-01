@@ -1,53 +1,58 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:task_manager_app/app/core/notification_service.dart';
+import 'package:task_manager_app/app/modules/home/models/task_model.dart';
 
 class TaskStore {
   final supabase = Supabase.instance.client;
 
-  Future<List<Map<String, dynamic>>> fetchTasks() async {
+  Future<List<TaskModel>> fetchTasks() async {
     final userId = supabase.auth.currentUser!.id;
+    final response =
+        await supabase
+                .from('tasks')
+                .select()
+                .eq('user_id', userId)
+                .order('scheduled_at', ascending: true)
+                .order('status', ascending: true);
+
+    return response.map((e) => TaskModel.fromMap(e)).toList();
+  }
+
+  Future<void> addTask(TaskModel task) async {
+    return supabase.from('tasks').insert(task.toMap());
+  }
+
+  Future<void> updateTask(TaskModel task) async {
+    return supabase.from('tasks').update(task.toMap()).eq('id', task.id);
+  }
+
+  Future<void> updateTaskStatus(String id, TaskStatus status) {
     return supabase
-      .from('tasks')
-      .select()
-      .eq('user_id', userId)
-      .order('status', ascending: false)
-      .then((res) => res);
+        .from('tasks')
+        .update({
+          'status': status.name,
+          'completed_at':
+              status == TaskStatus.completed ? DateTime.now().toIso8601String() : null,
+        })
+        .eq('id', id);
   }
 
-  Future<void> addTask(String title, String description, bool completed) =>
-    supabase.from('tasks').insert({
-      'title': title,
-      'description': description,
-      'user_id': supabase.auth.currentUser!.id,
-      'status': completed ? 'completed' : 'pending',
-      'completed_at': completed ? DateTime.now().toIso8601String() : null,
-      // status vem como 'pending' por default no banco
-    });
+  Future<List<TaskModel>> fetchDueTasks(DateTime now) async {
+    final userId = supabase.auth.currentUser?.id;
+    if (userId == null) return [];
 
-  Future<void> updateTaskStatus(String id, bool completed) =>
-    supabase.from('tasks').update({
-      'status': completed ? 'completed' : 'pending',
-      'completed_at': completed ? DateTime.now().toIso8601String() : null,
-    }).eq('id', id);
+    final response =
+        await supabase
+                .from('tasks')
+                .select()
+                .eq('user_id', userId)
+                .eq('status', TaskStatus.pending.name)
+                .lte('scheduled_at', now.toIso8601String());
 
-  Future<void> updateTask(
-    String id, {
-    String? title,
-    String? description,
-    String? status,
-  }) {
-    final changes = <String, dynamic>{};
-    if (title      != null) changes['title']       = title;
-    if (description!= null) changes['description'] = description;
-    if (status     != null) changes['status']      = status;
-    if (status == 'completed') {
-      changes['completed_at'] = DateTime.now().toIso8601String();
-    } else if (status == 'pending') {
-      changes['completed_at'] = null;
-    }
-    return supabase.from('tasks').update(changes).eq('id', id);
+    return response.map((e) => TaskModel.fromMap(e)).toList();
   }
 
-  Future<void> deleteTask(String id) =>
-    supabase.from('tasks').delete().eq('id', id);
+  Future<void> deleteTask(String id) async {
+    return supabase.from('tasks').delete().eq('id', id);
+  }
 }
-

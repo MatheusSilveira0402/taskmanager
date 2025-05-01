@@ -1,40 +1,46 @@
 import 'package:flutter/material.dart';
-import '../stores/task_store.dart';
+import 'package:task_manager_app/app/modules/home/models/task_model.dart';
+import 'package:task_manager_app/app/modules/home/stores/task_store.dart';
 
 class TaskProvider extends ChangeNotifier {
-  final TaskStore _store = TaskStore();
-  List<Map<String, dynamic>> tasks = [];
+  final TaskStore _store;
+  TaskProvider(this._store);
+
+  List<TaskModel> tasks = [];
   bool loading = false;
 
   Future<void> fetchTasks() async {
-    loading = false;
-    tasks = await _store.fetchTasks();
     loading = true;
+    notifyListeners();
+
+    tasks = await _store.fetchTasks();
+
+    loading = false;
     notifyListeners();
   }
 
-  Future<void> addTask(String title, String description, bool completed) async {
-    await _store.addTask(title, description, completed);
+  Future<void> addTask(TaskModel task) async {
+    await _store.addTask(task);
     await fetchTasks();
   }
 
-  Future<void> updateTaskStatus(String id, bool completed) async {
-    await _store.updateTaskStatus(id, completed);
+  Future<void> updateTask(TaskModel task) async {
+    await _store.updateTask(task);
     await fetchTasks();
   }
 
-  Future<void> updateTask(
-    String id, {
-    String? title,
-    String? description,
-    String? status,
-  }) async {
-    await _store.updateTask(id, title: title, description: description, status: status);
-    await fetchTasks();
+  Future<void> updateTaskStatus(String id, TaskStatus status) async {
+    final idx = tasks.indexWhere((t) => t.id == id);
+    if (idx != -1) {
+      tasks[idx] = tasks[idx].copyWith(status: status);
+      notifyListeners();
+    }
+    await _store.updateTaskStatus(id, status);
   }
 
   Future<void> deleteTask(String id) async {
     await _store.deleteTask(id);
-    await fetchTasks();
+    tasks.removeWhere((t) => t.id == id);
+    notifyListeners();
   }
 }
