@@ -1,4 +1,5 @@
-enum TaskStatus { pending, progress, completed }
+enum TaskStatus { pending, progress, completed, delete }
+
 enum TaskPriority { low, medium, high }
 
 extension TaskStatusExtension on TaskStatus {
@@ -10,6 +11,8 @@ extension TaskStatusExtension on TaskStatus {
         return 'progress';
       case TaskStatus.completed:
         return 'completed';
+      case TaskStatus.delete:
+        return 'delete';
     }
   }
 
@@ -34,7 +37,7 @@ extension TaskPriorityExtension on TaskPriority {
       case TaskPriority.high:
         return 'high';
       case TaskPriority.medium:
-      return 'medium';
+        return 'medium';
     }
   }
 
@@ -56,7 +59,7 @@ class TaskModel {
   final String userId;
   final String title;
   final String? description;
-  final TaskStatus status;
+  late TaskStatus status;
   final TaskPriority priority;
   final DateTime createdAt;
   final DateTime? completedAt;
@@ -82,37 +85,34 @@ class TaskModel {
       description: map['description'],
       status: TaskStatusExtension.fromString(map['status'] ?? 'pending'),
       priority: TaskPriorityExtension.fromString(map['priority'] ?? 'medium'),
-      createdAt: map['created_at'] != null
-          ? DateTime.parse(map['created_at'])
-          : DateTime.now(),
-      completedAt: map['completed_at'] != null
-          ? DateTime.parse(map['completed_at'])
-          : null,
-      scheduledAt: map['scheduled_at'] != null
-          ? DateTime.parse(map['scheduled_at'])
-          : null,
+      createdAt:
+          map['created_at'] != null ? DateTime.parse(map['created_at']) : DateTime.now(),
+      completedAt:
+          map['completed_at'] != null ? DateTime.parse(map['completed_at']) : null,
+      scheduledAt:
+          map['scheduled_at'] != null ? DateTime.parse(map['scheduled_at']) : null,
     );
   }
 
   Map<String, dynamic> toMap() {
-  final map = <String, dynamic>{
-    'user_id': userId,
-    'title': title,
-    'description': description,
-    'status': status.name,
-    'priority': priority.name,
-    'scheduled_at': scheduledAt?.toIso8601String(),
-    'created_at': createdAt.toIso8601String(),
-    'completed_at': completedAt?.toIso8601String(),
-  };
+    final map = <String, dynamic>{
+      'user_id': userId,
+      'title': title,
+      'description': description,
+      'status': status.name,
+      'priority': priority.name,
+      'scheduled_at': scheduledAt?.toIso8601String(),
+      'created_at': createdAt.toIso8601String(),
+      'completed_at': completedAt?.toIso8601String(),
+    };
 
-  // Evita enviar um id vazio (''), pois isso quebra no Supabase
-  if (id.isNotEmpty) {
-    map['id'] = id;
+    // Evita enviar um id vazio (''), pois isso quebra no Supabase
+    if (id.isNotEmpty) {
+      map['id'] = id;
+    }
+
+    return map;
   }
-
-  return map;
-}
 
   TaskModel copyWith({
     String? id,

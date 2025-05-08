@@ -8,6 +8,34 @@ class TaskProvider extends ChangeNotifier {
 
   List<TaskModel> tasks = [];
   bool loading = false;
+  DateTime? _selectedDate;
+  TaskStatus? _selectedStatus;
+
+  // Getters e setters dos filtros
+  DateTime? get selectedDate => _selectedDate;
+  TaskStatus? get selectedStatus => _selectedStatus;
+
+  void setSelectedDate(DateTime? date) {
+    _selectedDate = date;
+    notifyListeners();
+  }
+
+  void setSelectedStatus(TaskStatus? status) {
+    _selectedStatus = status;
+    notifyListeners();
+  }
+
+  List<TaskModel> get filteredTasks {
+    return tasks.where((task) {
+      final matchesStatus = _selectedStatus == null || task.status == _selectedStatus;
+      final matchesDate = _selectedDate == null ||
+          (task.scheduledAt != null &&
+              task.scheduledAt!.year == _selectedDate!.year &&
+              task.scheduledAt!.month == _selectedDate!.month &&
+              task.scheduledAt!.day == _selectedDate!.day);
+      return matchesStatus && matchesDate;
+    }).toList();
+  }
 
   Future<void> fetchTasks() async {
     loading = true;
@@ -27,6 +55,23 @@ class TaskProvider extends ChangeNotifier {
   Future<void> updateTask(TaskModel task) async {
     await _store.updateTask(task);
     await fetchTasks();
+  }
+
+  Future<void> checkAndUpdateTaskStatuses() async {
+    final now = DateTime.now();
+
+    for (TaskModel task in tasks) {
+      if (task.status == TaskStatus.pending && task.scheduledAt != null) {
+        final startTime = task.scheduledAt!.subtract(const Duration(seconds: 10));
+        final shouldUpdateStatus = now.isAfter(startTime);
+        if (shouldUpdateStatus) {
+          task.status = TaskStatus.progress;
+          await updateTaskStatus(task.id, task.status);
+        }
+      }
+    }
+
+    notifyListeners();
   }
 
   Future<void> updateTaskStatus(String id, TaskStatus status) async {

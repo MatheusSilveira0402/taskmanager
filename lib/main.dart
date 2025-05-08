@@ -1,45 +1,53 @@
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:task_manager_app/app/core/env.dart';
-
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:task_manager_app/app/core/notification_service.dart';
+import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
+import 'package:workmanager/workmanager.dart';
 
 import 'app/app_module.dart';
 import 'app/app_widget.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Supabase.initialize(url: Env.supabaseUrl, anonKey: Env.supabaseAnonKey);
-  await Firebase.initializeApp();
 
-  // 2) Inicializa as notificações
-  const androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
-  await _notifs.initialize(
-    const InitializationSettings(android: androidInit),
+  // Inicializa o Supabase
+  await Supabase.initialize(
+    url: Env.supabaseUrl,
+    anonKey: Env.supabaseAnonKey,
   );
 
-   // Solicita permissão no iOS e inicia notificações
-  await _initFCM();
+  // Inicialize o Workmanager
+  await Workmanager().initialize(
+    callbackDispatcher,
+    isInDebugMode: false, // Defina como false em produção
+  );
+
+  // Permissão para notificações 
+  _requestNotificationPermission();
+
+  // Inicializa timezone e notificações
+  tz.initializeTimeZones();
+  const AndroidInitializationSettings initializationSettingsAndroid =
+      AndroidInitializationSettings('@mipmap/ic_launcher');
+
+  const InitializationSettings initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid,
+  );
+
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
   runApp(ModularApp(module: AppModule(), child: const AppWidget()));
 }
 
-final FlutterLocalNotificationsPlugin _notifs =
-    FlutterLocalNotificationsPlugin();
-
-// Esta key será usada pelo WorkManager
-// ignore: constant_identifier_names
-const String TASK_UPDATE_CALLBACK = "taskUpdateCallback";
-
-
-Future<void> _initFCM() async {
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-  // Solicita permissão para iOS
-  await messaging.requestPermission();
-
-  // Obtém e imprime o token FCM do dispositivo
-  String? token = await messaging.getToken();
+Future<void> _requestNotificationPermission() async {
+  if (Platform.isAndroid && await Permission.notification.isDenied) {
+    await Permission.notification.request();
+  }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:task_manager_app/app/modules/auth/pages/login_pages.dart';
-import 'package:task_manager_app/app/modules/auth/pages/register.dart';
+import 'package:task_manager_app/app/modules/auth/pages/login_page.dart';
+import 'package:task_manager_app/app/modules/auth/pages/register_page.dart';
 import 'stores/auth_store.dart';
 
 class AuthModule extends Module {
