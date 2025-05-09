@@ -8,13 +8,19 @@ import '../stores/auth_store.dart';
 class RegisterPage extends StatelessWidget {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _nameController = TextEditingController(); // Novo campo de nome
   final _authStore = Modular.get<AuthStore>();
 
   RegisterPage({super.key});
 
   void _register(BuildContext context) async {
     try {
-      await _authStore.signUp(_emailController.text, _passwordController.text);
+      // Passando o nome para o signUp
+      await _authStore.signUp(
+        _emailController.text, 
+        _passwordController.text,
+        _nameController.text, // Adicionando o nome
+      );
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Cadastro realizado com sucesso!')),
@@ -72,6 +78,11 @@ class RegisterPage extends StatelessWidget {
                     child: Column(
                       spacing: 20.0,
                       children: [
+                        CustomTextField(
+                          controller: _nameController, // Novo campo de nome
+                          label:'Nome',
+                          icon: Icons.person_outline,
+                        ),
                         CustomTextField(
                           controller: _emailController,
                           label:'E-mail',

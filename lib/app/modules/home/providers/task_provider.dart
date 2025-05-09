@@ -26,6 +26,7 @@ class TaskProvider extends ChangeNotifier {
   }
 
   List<TaskModel> get filteredTasks {
+    // Se _selectedDate for null, retorna todas as tarefas, sem filtro de data
     return tasks.where((task) {
       final matchesStatus = _selectedStatus == null || task.status == _selectedStatus;
       final matchesDate = _selectedDate == null ||

@@ -55,10 +55,15 @@ class TaskCard extends StatelessWidget {
     return '$hour:$minutes $suffix';
   }
 
+  String _formatDate(DateTime? dt) {
+    if (dt == null) return '';
+    return '${dt.day.toString().padLeft(2, '0')}/${dt.month.toString().padLeft(2, '0')}/${dt.year}';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
         margin: EdgeInsets.zero,
@@ -95,7 +100,7 @@ class TaskCard extends StatelessWidget {
               ),
             ),
             subtitle: Text(
-              _getStatusText(task.status),
+              "${_getStatusText(task.status)} ${_formatDate(task.completedAt)}",
               style: TextStyle(
                 color: _getStatusColor(task.status),
                 fontWeight: FontWeight.bold,
@@ -105,9 +110,18 @@ class TaskCard extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 // Horário
-                Text(
-                  _formatTime(task.scheduledAt),
-                  style: const TextStyle(fontWeight: FontWeight.w500),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      _formatDate(task.scheduledAt),
+                      style: const TextStyle(fontWeight: FontWeight.w500),
+                    ),
+                    Text(
+                      _formatTime(task.scheduledAt),
+                      style: const TextStyle(fontWeight: FontWeight.w500),
+                    ),
+                  ],
                 ),
                 const SizedBox(width: 8),
                 // Menu de status
@@ -159,7 +173,7 @@ class TaskCard extends StatelessWidget {
                 ),
               ],
             ),
-            onTap: () => Modular.to.pushNamed('/home/taskform', arguments: task),
+            onTap: () => Modular.to.pushNamed('/main/home/taskform', arguments: task),
           ),
         ),
       ),

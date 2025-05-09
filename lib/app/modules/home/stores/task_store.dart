@@ -1,8 +1,5 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:task_manager_app/app/modules/home/models/task_model.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:timezone/timezone.dart' as tz;
-import 'package:task_manager_app/main.dart';
 import 'package:workmanager/workmanager.dart';
 
 class TaskStore {

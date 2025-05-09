@@ -4,7 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:task_manager_app/app/core/extension_size.dart';
 import 'package:task_manager_app/app/modules/home/models/task_model.dart';
 import 'package:task_manager_app/app/modules/home/providers/task_provider.dart';
-import 'package:task_manager_app/app/modules/home/widget/custom_date_picker_input.dart';
+import 'package:task_manager_app/app/modules/home/widgets/custom_date_picker_input.dart';
 import 'package:task_manager_app/app/widgets/custom_button.dart';
 import 'package:task_manager_app/app/widgets/custom_date_picker_button.dart';
 import 'package:task_manager_app/app/widgets/custom_dropdown.dart';

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:task_manager_app/app/core/extension_size.dart';
 import 'package:task_manager_app/app/widgets/custom_button.dart';
 import 'package:task_manager_app/app/widgets/custom_text_field.dart';
@@ -18,8 +19,19 @@ class LoginPage extends StatelessWidget {
       Modular.to.navigate('/main');
     } catch (e) {
       if (!context.mounted) return;
+      String errorMessage = 'Erro ao fazer login. Tente novamente mais tarde.';
+      if (e is AuthApiException) {
+        if (e.message.contains('Email not confirmed')) {
+          errorMessage =
+              'Seu e-mail ainda não foi confirmado. Verifique sua caixa de entrada.';
+        } else {
+          errorMessage = e.message;
+        }
+      } else {
+        errorMessage = 'Erro inesperado: $e';
+      }
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erro ao fazer login: $e')),
+        SnackBar(content: Text(errorMessage)),
       );
     }
   }
@@ -27,7 +39,7 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF52B2AD),
+      backgroundColor: const Color(0xFF52B2AD),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
