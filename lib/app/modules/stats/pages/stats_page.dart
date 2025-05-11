@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:task_manager_app/app/core/extension_size.dart';
-import 'package:task_manager_app/app/modules/profile/pages/profile_page.dart';
+import 'package:task_manager_app/app/modules/stats/pages/profile_page.dart';
 import 'package:task_manager_app/app/modules/stats/provider/stats_provider.dart';
 import 'package:task_manager_app/app/modules/stats/widgets/custom_date_picker_button.dart';
 import 'package:task_manager_app/app/modules/stats/widgets/stats_card.dart';

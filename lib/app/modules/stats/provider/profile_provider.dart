@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager_app/app/modules/profile/store/profile_store.dart';
+import 'package:task_manager_app/app/modules/stats/store/profile_store.dart';
 
 class ProfileProvider extends ChangeNotifier {
   final ProfileStore _store;

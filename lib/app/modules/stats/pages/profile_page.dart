@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:task_manager_app/app/core/extension_size.dart';
-import 'package:task_manager_app/app/modules/profile/providers/profile_provider.dart';
+import 'package:task_manager_app/app/modules/stats/provider/profile_provider.dart';
 import 'package:task_manager_app/app/widgets/custom_button.dart';
 
 class ProfilePage extends StatefulWidget {

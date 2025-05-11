@@ -49,7 +49,7 @@ class StatsStore {
   }
 
   List<int> calculateCompletedPerDay(List data) {
-    List<int> completedPerDay = [0, 0, 0, 0, 0, 0, 0]; // Inicia a lista com zeros
+    List<int> completedPerDay = [0, 0, 0, 0, 0, 0, 0,]; // Inicia a lista com zeros
     final now = DateTime.now();
 
     for (final item in data) {
@@ -59,8 +59,11 @@ class StatsStore {
 
       if (status == 'completed' && completedAt != null) {
         final daysDifference = now.difference(completedAt).inDays;
-        if (daysDifference >= 0 && daysDifference < 7) {
+        if (daysDifference >= 0 && daysDifference < 7 && completedAt.weekday != 7) {
           final dayIndex = completedAt.weekday;
+          completedPerDay[dayIndex]++;
+        } else {
+          const dayIndex = 0;
           completedPerDay[dayIndex]++;
         }
       }
