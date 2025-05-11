@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:task_manager_app/app/core/extension_size.dart';
+import 'package:task_manager_app/app/modules/profile/pages/profile_page.dart';
 import 'package:task_manager_app/app/modules/stats/provider/stats_provider.dart';
 import 'package:task_manager_app/app/modules/stats/widgets/custom_date_picker_button.dart';
 import 'package:task_manager_app/app/modules/stats/widgets/stats_card.dart';
+import 'package:task_manager_app/app/modules/stats/widgets/stats_skeleton.dart';
 
 class StatsPage extends StatefulWidget {
   const StatsPage({super.key});
@@ -20,7 +22,11 @@ class _StatsPageState extends State<StatsPage> {
   void initState() {
     super.initState();
     statsProvider = context.read<StatsProvider>();
-    statsProvider.setSelectedDate(DateTime.now(), DateTime.now());
+
+    final now = DateTime.now();
+    final startDate = now.subtract(const Duration(days: 6));
+
+    statsProvider.setSelectedDate(startDate, now);
     statsProvider.fetchStats();
   }
 
@@ -29,7 +35,7 @@ class _StatsPageState extends State<StatsPage> {
     final provider = context.watch<StatsProvider>();
 
     if (provider.loading) {
-      return const Center(child: CircularProgressIndicator());
+      return const StatsSkeleton();
     }
     return Scaffold(
       body: Stack(
@@ -39,32 +45,37 @@ class _StatsPageState extends State<StatsPage> {
             left: 0,
             right: 0,
             child: Container(
-              decoration: BoxDecoration(
-                  color: const Color.fromARGB(127, 82, 178, 173),
-                  borderRadius: BorderRadius.circular(30)),
+              decoration: const BoxDecoration(
+                  color: Color.fromARGB(127, 82, 178, 173),
+                  borderRadius: BorderRadius.only(
+                      bottomRight: Radius.circular(30), bottomLeft: Radius.circular(30))),
               height: context.heightPct(0.4) - 60,
             ),
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 20.0,
+            spacing: 10.0,
             children: [
               AppBar(
                 backgroundColor: Colors.transparent,
                 elevation: 0,
-                toolbarHeight: 100,
+                toolbarHeight: 90,
                 titleTextStyle: const TextStyle(fontSize: 40, color: Color(0xFF0f2429)),
                 title: Container(
                   margin: const EdgeInsets.only(right: 2),
-                  child: const Text("Dashboard"),
+                  child: const Text("Estatísticas"),
                 ),
               ),
               Container(
                 margin: const EdgeInsets.all(12),
                 child: SingleChildScrollView(
                   child: Column(
-                    spacing: 20.0,
+                    spacing: 10.0,
                     children: [
+                      SizedBox(
+                        width: context.widthPct(1),
+                        child: const ProfilePage(),
+                      ),
                       SingleChildScrollView(
                         child: Padding(
                           padding: const EdgeInsets.all(4.0),
@@ -125,8 +136,7 @@ class _StatsPageState extends State<StatsPage> {
                                 title: 'Concluídas',
                                 value: provider.completed.toString()),
                             StatCard(
-                                title: 'Em Progresso',
-                                value: provider.progress.toString()),
+                                title: 'Progresso', value: provider.progress.toString()),
                             StatCard(
                                 title: 'Pendentes', value: provider.pending.toString()),
                           ],

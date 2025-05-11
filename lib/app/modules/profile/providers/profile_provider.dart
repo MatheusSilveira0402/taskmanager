@@ -8,6 +8,7 @@ class ProfileProvider extends ChangeNotifier {
 
   String name = '';
   String email = '';
+  String avatar = '';  // Novo campo para o avatar
   bool loading = false;
 
   Future<void> fetchProfile() async {
@@ -18,6 +19,7 @@ class ProfileProvider extends ChangeNotifier {
       final profile = await _store.fetchProfile();
       name = profile['name'];
       email = profile['email'];
+      avatar = profile['avatar'] ?? '';  // Definindo a URL do avatar
     } catch (e) {
       print('Error fetching profile: $e');
     }
@@ -25,4 +27,6 @@ class ProfileProvider extends ChangeNotifier {
     loading = false;
     notifyListeners();
   }
+  
 }
+

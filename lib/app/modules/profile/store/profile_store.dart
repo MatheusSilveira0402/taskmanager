@@ -4,28 +4,26 @@ class ProfileStore {
   final supabase = Supabase.instance.client;
 
   Future<Map<String, dynamic>> fetchProfile() async {
-    final userId = supabase.auth.currentUser!.id;
-
-    final response = await supabase
-        .from('user')
-        .select('name, email')
-        .eq('user_id', userId)
-        .single();
-
-    return response;
-  }
-
-  Future<void> updateProfile(String name, String email) async {
-    final userId = supabase.auth.currentUser!.id;
-
-    final response = await supabase.from('profiles').insert({
-      'user_id': userId,
-      'name': name,
-      'email': email,
-    });
-
-    if (response.error != null) {
-      throw Exception('Error updating profile');
+    final user = supabase.auth.currentUser;
+    if (user == null) {
+      throw Exception('User is not authenticated');
     }
+
+    final userId = user.id;
+    Map<String, dynamic> mapProfile = {};
+    String? email = user.email;
+
+    // Buscar o nome e o caminho do avatar do usuário
+    final response = await supabase
+        .from("user_profiles")
+        .select('name, avatar')
+        .eq("user_id", userId)
+        .single(); 
+
+    String name = response['name'];
+    String avatar = response['avatar'] ?? ''; // Caminho do avatar
+
+    mapProfile = {'name': name, 'email': email, 'avatar': avatar };
+    return mapProfile;
   }
 }

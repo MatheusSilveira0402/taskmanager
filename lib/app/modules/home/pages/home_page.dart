@@ -1,10 +1,15 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:task_manager_app/app/core/extension_size.dart';
 import 'package:task_manager_app/app/modules/home/models/task_model.dart';
+import 'package:task_manager_app/app/modules/auth/providers/sign_out_provider.dart';
 import 'package:task_manager_app/app/modules/home/widgets/task_card.dart';
+import 'package:task_manager_app/app/modules/home/widgets/task_card_skeleton.dart';
 import 'package:task_manager_app/app/widgets/custom_date_picker_button.dart';
 import '../providers/task_provider.dart';
 
@@ -21,6 +26,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+
     taskProvider = context.read<TaskProvider>();
     if (taskProvider.selectedDate == null) {
       taskProvider.setSelectedDate(DateTime.now());
@@ -34,6 +40,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<TaskProvider>();
+    final signOutProvider = context.watch<SignOutProvider>();
 
     return Scaffold(
       body: Stack(
@@ -43,9 +50,10 @@ class _HomePageState extends State<HomePage> {
             left: 0,
             right: 0,
             child: Container(
-              decoration: BoxDecoration(
-                  color: const Color.fromARGB(127, 82, 178, 173),
-                  borderRadius: BorderRadius.circular(30)),
+              decoration: const BoxDecoration(
+                  color: Color.fromARGB(127, 82, 178, 173),
+                  borderRadius: BorderRadius.only(
+                      bottomRight: Radius.circular(30), bottomLeft: Radius.circular(30))),
               height: context.heightPct(0.4) - 60,
             ),
           ),
@@ -58,6 +66,17 @@ class _HomePageState extends State<HomePage> {
                 toolbarHeight: 90,
                 titleTextStyle: const TextStyle(fontSize: 40, color: Color(0xFF0f2429)),
                 title: const Text("Tarefas"),
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.logout, color: Color(0xFF0f2429)),
+                    onPressed: () async {
+                      await signOutProvider.signOut();
+                      // Navegar de volta para a tela de login, por exemplo:
+                      Navigator.of(context)
+                            .pushNamedAndRemoveUntil('/', (route) => false);
+                    },
+                  ),
+                ],
               ),
               SingleChildScrollView(
                 child: Container(
@@ -144,7 +163,12 @@ class _HomePageState extends State<HomePage> {
                 child: Builder(
                   builder: (context) {
                     if (provider.loading) {
-                      return const Center(child: CircularProgressIndicator());
+                      return ListView.builder(
+                        itemCount: 6, // mostra 6 placeholders enquanto carrega
+                        itemExtent: 100.0,
+                        padding: EdgeInsets.zero,
+                        itemBuilder: (context, index) => const TaskCardSkeleton(),
+                      );
                     }
                     final tasks = provider.filteredTasks;
 
@@ -154,10 +178,13 @@ class _HomePageState extends State<HomePage> {
 
                     return ListView.builder(
                       itemCount: tasks.length,
-                      itemExtent: 100.0, // Pode ser ajustado conforme necessário
+                      itemExtent: 110.0, // Pode ser ajustado conforme necessário
                       padding: EdgeInsets.zero, // Remove o padding da lista
                       itemBuilder: (context, index) {
                         final task = tasks[index];
+                        if (provider.loadingIndividual && task.id == provider.idUpdate) {
+                          return const TaskCardSkeleton();
+                        }
                         return TaskCard(
                           task: task,
                           onStatusChange: (checked) {

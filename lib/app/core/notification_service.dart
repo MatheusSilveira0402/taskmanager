@@ -23,9 +23,11 @@ void callbackDispatcher() {
     await flutterLocalNotificationsPlugin.show(
       taskId.hashCode,
       'Lembrete de tarefa',
-      taskTitle,
+      "teste",
       platformDetails,
     );
     return Future.value(true);
   });
+
+   
 }

@@ -14,7 +14,6 @@ class _MainPageState extends State<MainPage> {
   final routes = [
     '/main/home/',
     '/main/stats/',
-    '/main/profile/',
   ];
 
   @override
@@ -44,7 +43,6 @@ class _MainPageState extends State<MainPage> {
           items: const [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Início'),
             BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'Estatísticas'),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
           ],
         ),
       ),

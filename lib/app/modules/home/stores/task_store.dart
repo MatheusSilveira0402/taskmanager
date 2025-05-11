@@ -19,6 +19,19 @@ class TaskStore {
     return (response as List).map((e) => TaskModel.fromMap(e)).toList();
   }
 
+  Future<TaskModel> fetchOneTask(String id) async {
+    final userId = supabase.auth.currentUser!.id;
+
+
+    final response = await supabase
+        .from('tasks')
+        .select()
+        .eq('user_id', userId)
+        .eq('id', id);
+
+    return TaskModel.fromMap(response.first);
+  }
+
   Future<void> addTask(TaskModel task) async {
     await supabase.from('tasks').insert(task.toMap());
     await scheduleNotificationForTask(task);

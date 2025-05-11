@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:task_manager_app/app/core/extension_size.dart';
 import 'package:task_manager_app/app/modules/profile/providers/profile_provider.dart';
+import 'package:task_manager_app/app/widgets/custom_button.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -27,25 +29,40 @@ class _ProfilePageState extends State<ProfilePage> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Profile')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
+      spacing: 20,
+      children: [
+        CircleAvatar(
+          radius: 40,
+          backgroundImage:
+              provider.avatar.isNotEmpty ? NetworkImage(provider.avatar) : null,
+          child: provider.avatar.isNotEmpty
+              ? null
+              : const Icon(Icons.person,
+                  size: 40, color: Colors.white70), // Imagem padrão
+        ),
+        Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Name: ${provider.name}'),
-            Text('Email: ${provider.email}'),
-            // Adicione mais informações de perfil conforme necessário
-            ElevatedButton(
-              onPressed: () {
-                // Função para editar o perfil
-              },
-              child: const Text('Edit Profile'),
+            Text(
+              "Ola, ${provider.name}",
+              style: const TextStyle(
+                fontSize: 25,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF00695c),
+              ),
+            ),
+            Text(
+              provider.email,
+              style: const TextStyle(
+                fontSize: 15,
+              ),
             ),
           ],
-        ),
-      ),
+        )
+      ],
     );
   }
 }

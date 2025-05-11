@@ -47,9 +47,9 @@ class CustomDatePickerButton extends StatelessWidget {
               selectedDate != null
                   ? '${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}'
                   : label,
-              style: const TextStyle(fontSize: 19),
+              style: const TextStyle(fontSize: 14),
             ),
-            const Icon(Icons.calendar_today, size: 19,),
+            const Icon(Icons.calendar_today, size: 14,),
           ],
         ),
       ),

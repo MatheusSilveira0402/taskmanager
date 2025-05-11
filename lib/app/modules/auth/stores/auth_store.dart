@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthStore {
@@ -13,38 +15,47 @@ class AuthStore {
     }
   }
 
-  Future<void> signUp(String email, String password, String name) async {
+  Future<void> signUp(String email, String password, String name, [File? avatar]) async {
     try {
-      // Realizando o cadastro do usuário
-      final response = await supabase.auth.signUp(
-        email: email,
-        password: password,
-      );
-
-      if (response.user == null) {
-        throw Exception('Erro ao cadastrar: $response');
-      }
-
+      // Cria o usuário
+      final response = await supabase.auth.signUp(email: email, password: password);
       final user = response.user;
-      final userId = user?.id;
 
-      // Após o cadastro, vamos salvar informações extras na tabela user_profiles
-      final profileResponse = await supabase.from('user_profiles').insert({
-        'user_id': userId, // Chave do usuário
-        'name': name, // Nome fornecido durante o cadastro
-        'avatar': '', // Você pode deixar vazio ou adicionar um valor padrão
-      });
-
-      if (profileResponse != null) {
-        throw Exception(
-            'Erro ao salvar dados do perfil: ${profileResponse.error?.message}');
+      if (user == null) {
+        throw Exception('Erro ao cadastrar o usuário.');
       }
+
+      // Aguarda brevemente para garantir que o usuário foi persistido no banco
+      await Future.delayed(const Duration(seconds: 1));
+
+      String avatarUrl = '';
+
+      // Se houver avatar, faz upload
+      if (avatar != null) {
+        final fileName = '${user.id}.jpg';
+
+        final storageResponse =
+            await supabase.storage.from('avatars').upload(fileName, avatar);
+
+        if (!storageResponse.contains('avatars')) {
+          throw Exception(
+              'Erro ao fazer upload do avatar: $storageResponse');
+        }
+
+        final urlResponse = supabase.storage.from('avatars').getPublicUrl(fileName);
+        avatarUrl = urlResponse;
+      }
+
+      // Salva os dados do perfil
+      await supabase.from('user_profiles').insert({
+        'user_id': user.id,
+        'name': name,
+        'avatar': avatarUrl,
+      });
     } catch (e) {
-      throw Exception('Erro ao cadastrar o usuário. Tente novamente mais tarde.');
+      throw Exception('Erro ao cadastrar o usuário: $e');
     }
   }
 
-  Future<void> signOut() async {
-    await supabase.auth.signOut();
-  }
+  
 }

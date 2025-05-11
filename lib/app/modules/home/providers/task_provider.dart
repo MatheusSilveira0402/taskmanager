@@ -8,6 +8,8 @@ class TaskProvider extends ChangeNotifier {
 
   List<TaskModel> tasks = [];
   bool loading = false;
+  String idUpdate = "";
+  bool loadingIndividual = false;
   DateTime? _selectedDate;
   TaskStatus? _selectedStatus;
 
@@ -60,7 +62,6 @@ class TaskProvider extends ChangeNotifier {
 
   Future<void> checkAndUpdateTaskStatuses() async {
     final now = DateTime.now();
-
     for (TaskModel task in tasks) {
       if (task.status == TaskStatus.pending && task.scheduledAt != null) {
         final startTime = task.scheduledAt!.subtract(const Duration(seconds: 10));
@@ -76,13 +77,22 @@ class TaskProvider extends ChangeNotifier {
   }
 
   Future<void> updateTaskStatus(String id, TaskStatus status) async {
-    final idx = tasks.indexWhere((t) => t.id == id);
-    if (idx != -1) {
-      tasks[idx] = tasks[idx].copyWith(status: status);
-      notifyListeners();
-    }
-    await _store.updateTaskStatus(id, status);
+  loadingIndividual = true;
+  idUpdate = id;
+  notifyListeners();
+  await _store.updateTaskStatus(id, status);
+
+  final idx = tasks.indexWhere((t) => t.id == id);
+  if (idx != -1) {
+    tasks[idx] = tasks[idx].copyWith(status: status);
+    loadingIndividual = false;
+    notifyListeners();
+
+    final updatedTask = await _store.fetchOneTask(id);
+    tasks[idx] = updatedTask;
+    notifyListeners();
   }
+}
 
   Future<void> deleteTask(String id) async {
     await _store.deleteTask(id);

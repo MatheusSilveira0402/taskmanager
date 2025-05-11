@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:task_manager_app/app/core/extension_size.dart';
 import 'package:task_manager_app/app/modules/home/models/task_model.dart';
 
 class TaskCard extends StatelessWidget {
@@ -62,118 +63,130 @@ class TaskCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+    return Container(
+      margin: const EdgeInsets.all(10),
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
         margin: EdgeInsets.zero,
         elevation: 4,
-        child: Container(
-          margin: const EdgeInsets.all(10),
-          height: 129,
-          child: ListTile(
-            leading: GestureDetector(
-              onTap: () {
-                final isCompleted = task.status == TaskStatus.completed;
-                final newStatus = isCompleted ? TaskStatus.pending : TaskStatus.completed;
-                onStatusChange(newStatus);
-              },
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 300),
-                transitionBuilder: (child, animation) =>
-                    ScaleTransition(scale: animation, child: child),
-                child: Icon(
-                  key: ValueKey(task.status),
-                  _getStatusIcon(task.status),
-                  color: _getStatusColor(task.status),
-                  size: 40,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(25),
+          onTap: () => Modular.to.pushNamed('/main/home/taskform', arguments: task),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  final isCompleted = task.status == TaskStatus.completed;
+                  final newStatus =
+                      isCompleted ? TaskStatus.pending : TaskStatus.completed;
+                  onStatusChange(newStatus);
+                },
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  transitionBuilder: (child, animation) =>
+                      ScaleTransition(scale: animation, child: child),
+                  child: Icon(
+                    key: ValueKey(task.status),
+                    _getStatusIcon(task.status),
+                    color: _getStatusColor(task.status),
+                    size: 40,
+                  ),
                 ),
               ),
-            ),
-            title: Text(
-              task.title,
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                decoration: task.status == TaskStatus.completed
-                    ? TextDecoration.lineThrough
-                    : TextDecoration.none,
-              ),
-            ),
-            subtitle: Text(
-              "${_getStatusText(task.status)} ${_formatDate(task.completedAt)}",
-              style: TextStyle(
-                color: _getStatusColor(task.status),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Horário
-                Column(
+              // Título e status
+              SizedBox(
+                width: 120,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      _formatDate(task.scheduledAt),
-                      style: const TextStyle(fontWeight: FontWeight.w500),
+                      task.title,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                        decoration: task.status == TaskStatus.completed
+                            ? TextDecoration.lineThrough
+                            : TextDecoration.none,
+                      ),
                     ),
                     Text(
-                      _formatTime(task.scheduledAt),
-                      style: const TextStyle(fontWeight: FontWeight.w500),
-                    ),
-                  ],
-                ),
-                const SizedBox(width: 8),
-                // Menu de status
-                PopupMenuButton<TaskStatus>(
-                  icon: const Icon(Icons.more_vert),
-                  onSelected: onStatusChange,
-                  itemBuilder: (_) => [
-                    PopupMenuItem(
-                      value: TaskStatus.pending,
-                      child: Row(
-                        children: [
-                          const Icon(Icons.schedule, color: Colors.grey),
-                          const SizedBox(width: 8),
-                          Text(_getStatusText(TaskStatus.pending)),
-                        ],
-                      ),
-                    ),
-                    PopupMenuItem(
-                      value: TaskStatus.progress,
-                      child: Row(
-                        children: [
-                          const Icon(Icons.autorenew, color: Colors.teal),
-                          const SizedBox(width: 8),
-                          Text(_getStatusText(TaskStatus.progress)),
-                        ],
-                      ),
-                    ),
-                    PopupMenuItem(
-                      value: TaskStatus.completed,
-                      child: Row(
-                        children: [
-                          const Icon(Icons.check, color: Colors.green),
-                          const SizedBox(width: 8),
-                          Text(_getStatusText(TaskStatus.completed)),
-                        ],
-                      ),
-                    ),
-                    PopupMenuItem(
-                      value: TaskStatus.delete,
-                      child: Row(
-                        children: [
-                          const Icon(Icons.delete_forever, color: Colors.red),
-                          const SizedBox(width: 8),
-                          Text(_getStatusText(TaskStatus.delete)),
-                        ],
+                      "${_getStatusText(task.status)} ${task.status == TaskStatus.completed ? _formatDate(task.completedAt):""}",
+                      style: TextStyle(
+                        color: _getStatusColor(task.status),
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ],
                 ),
-              ],
-            ),
-            onTap: () => Modular.to.pushNamed('/main/home/taskform', arguments: task),
+              ),
+              // Data, hora e menu
+              Row(
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        _formatDate(task.scheduledAt),
+                        style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 11),
+                      ),
+                      Text(
+                        _formatTime(task.scheduledAt),
+                        style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 11),
+                      ),
+                    ],
+                  ),
+                  PopupMenuButton<TaskStatus>(
+                    icon: const Icon(Icons.more_vert),
+                    onSelected: onStatusChange,
+                    itemBuilder: (_) => [
+                      PopupMenuItem(
+                        value: TaskStatus.pending,
+                        child: Row(
+                          children: [
+                            const Icon(Icons.schedule, color: Colors.grey),
+                            const SizedBox(width: 10),
+                            Text(_getStatusText(TaskStatus.pending)),
+                          ],
+                        ),
+                      ),
+                      PopupMenuItem(
+                        value: TaskStatus.progress,
+                        child: Row(
+                          children: [
+                            const Icon(Icons.autorenew, color: Colors.teal),
+                            const SizedBox(width: 10),
+                            Text(_getStatusText(TaskStatus.progress)),
+                          ],
+                        ),
+                      ),
+                      PopupMenuItem(
+                        value: TaskStatus.completed,
+                        child: Row(
+                          children: [
+                            const Icon(Icons.check, color: Colors.green),
+                            const SizedBox(width: 10),
+                            Text(_getStatusText(TaskStatus.completed)),
+                          ],
+                        ),
+                      ),
+                      PopupMenuItem(
+                        value: TaskStatus.delete,
+                        child: Row(
+                          children: [
+                            const Icon(Icons.delete_forever, color: Colors.red),
+                            const SizedBox(width: 10),
+                            Text(_getStatusText(TaskStatus.delete)),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              )
+            ],
           ),
         ),
       ),

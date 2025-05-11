@@ -1,7 +1,9 @@
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:task_manager_app/app/modules/home/pages/home_page.dart';
 import 'package:task_manager_app/app/modules/home/pages/task_from_page.dart';
+import 'package:task_manager_app/app/modules/auth/providers/sign_out_provider.dart';
 import 'package:task_manager_app/app/modules/home/providers/task_provider.dart';
+import 'package:task_manager_app/app/modules/auth/stores/sign_out_store.dart';
 import 'package:task_manager_app/app/modules/home/stores/task_store.dart';
 
 class HomeModule extends Module {
@@ -9,6 +11,8 @@ class HomeModule extends Module {
   void binds(Injector i) {
     i.addSingleton<TaskStore>(() => TaskStore());
     i.addSingleton<TaskProvider>(() => TaskProvider(i.get<TaskStore>()));
+    i.addSingleton<SignOutStore>(() => SignOutStore());
+    i.addSingleton<SignOutProvider>(() => SignOutProvider(i.get<SignOutStore>()));
   }
 
   @override
