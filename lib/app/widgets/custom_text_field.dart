@@ -1,13 +1,30 @@
 import 'package:flutter/material.dart';
 
+/// Um campo de texto customizado com ícone, estilo consistente e suporte a validação.
+///
+/// O `CustomTextField` é um `TextFormField` encapsulado que oferece opções para
+/// configuração do ícone, rótulo, tipo de teclado, modo senha e validador,
+/// mantendo um estilo visual unificado em toda a aplicação.
 class CustomTextField extends StatelessWidget {
+  /// Controlador do texto que permite ler e modificar o conteúdo do campo.
   final TextEditingController controller;
-  final String label;
-  final IconData? icon;
-  final bool obscureText;
-  final TextInputType keyboardType;
-  final FormFieldValidator<String>? validator; // Validador
 
+  /// Texto exibido como rótulo acima do campo.
+  final String label;
+
+  /// Ícone exibido à esquerda do campo de texto (opcional).
+  final IconData? icon;
+
+  /// Define se o texto será obscurecido (útil para senhas).
+  final bool obscureText;
+
+  /// Define o tipo de teclado (ex: texto, número, e-mail, etc.).
+  final TextInputType keyboardType;
+
+  /// Função de validação que retorna uma mensagem de erro ou null.
+  final FormFieldValidator<String>? validator;
+
+  /// Construtor do campo de texto customizado.
   const CustomTextField({
     super.key,
     required this.controller,
@@ -15,7 +32,7 @@ class CustomTextField extends StatelessWidget {
     this.icon,
     this.obscureText = false,
     this.keyboardType = TextInputType.text,
-    this.validator, // Validador opcional
+    this.validator,
   });
 
   @override
@@ -24,10 +41,10 @@ class CustomTextField extends StatelessWidget {
       controller: controller,
       obscureText: obscureText,
       keyboardType: keyboardType,
-      validator: validator, // Aplicando o validador
+      validator: validator,
       decoration: InputDecoration(
         labelText: label,
-        prefixIcon: Icon(icon),
+        prefixIcon: icon != null ? Icon(icon) : null,
         border: const OutlineInputBorder(
           borderSide: BorderSide(color: Colors.transparent),
           borderRadius: BorderRadius.all(Radius.circular(12)),

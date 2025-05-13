@@ -28,6 +28,9 @@ dependencies:
   image_picker: ^1.1.2
   flutter_local_notifications: ^18.0.1
   shimmer: ^3.0.0
+  http: ^1.4.0
+  path_provider: ^2.1.5
+  native_image_cropper: ^0.6.0
 
 dev_dependencies:
   flutter_test:

@@ -1,8 +1,12 @@
+/// Enumeração que representa o status de uma tarefa.
 enum TaskStatus { pending, progress, completed, delete }
 
+/// Enumeração que representa a prioridade de uma tarefa.
 enum TaskPriority { low, medium, high }
 
+/// Extensão para [TaskStatus] que adiciona funcionalidades extras.
 extension TaskStatusExtension on TaskStatus {
+  /// Retorna o valor em formato de string associado ao status da tarefa.
   String get value {
     switch (this) {
       case TaskStatus.pending:
@@ -16,6 +20,10 @@ extension TaskStatusExtension on TaskStatus {
     }
   }
 
+  /// Converte uma string para o valor correspondente de [TaskStatus].
+  ///
+  /// Se a string não corresponder a um valor conhecido, o status retornado será
+  /// o [TaskStatus.pending] por padrão.
   static TaskStatus fromString(String value) {
     switch (value) {
       case 'progress':
@@ -29,7 +37,9 @@ extension TaskStatusExtension on TaskStatus {
   }
 }
 
+/// Extensão para [TaskPriority] que adiciona funcionalidades extras.
 extension TaskPriorityExtension on TaskPriority {
+  /// Retorna o valor em formato de string associado à prioridade da tarefa.
   String get value {
     switch (this) {
       case TaskPriority.low:
@@ -41,6 +51,10 @@ extension TaskPriorityExtension on TaskPriority {
     }
   }
 
+  /// Converte uma string para o valor correspondente de [TaskPriority].
+  ///
+  /// Se a string não corresponder a um valor conhecido, a prioridade retornada será
+  /// o [TaskPriority.medium] por padrão.
   static TaskPriority fromString(String value) {
     switch (value) {
       case 'low':
@@ -54,17 +68,36 @@ extension TaskPriorityExtension on TaskPriority {
   }
 }
 
+/// Modelo que representa uma tarefa no sistema.
 class TaskModel {
+  /// Identificador único da tarefa.
   late final String id;
+
+  /// Identificador do usuário associado à tarefa.
   final String userId;
+
+  /// Título da tarefa.
   final String title;
+
+  /// Descrição opcional da tarefa.
   final String? description;
+
+  /// Status atual da tarefa.
   late TaskStatus status;
+
+  /// Prioridade da tarefa.
   final TaskPriority priority;
+
+  /// Data e hora em que a tarefa foi criada.
   final DateTime createdAt;
+
+  /// Data e hora em que a tarefa foi concluída, se aplicável.
   final DateTime? completedAt;
+
+  /// Data e hora em que a tarefa foi agendada, se aplicável.
   final DateTime? scheduledAt;
 
+  /// Construtor da classe [TaskModel], responsável por inicializar os campos.
   TaskModel({
     required this.id,
     required this.userId,
@@ -77,6 +110,7 @@ class TaskModel {
     this.scheduledAt,
   }) : createdAt = createdAt ?? DateTime.now();
 
+  /// Cria uma instância de [TaskModel] a partir de um mapa de dados.
   factory TaskModel.fromMap(Map<String, dynamic> map) {
     return TaskModel(
       id: map['id'],
@@ -94,6 +128,7 @@ class TaskModel {
     );
   }
 
+  /// Converte a instância de [TaskModel] para um mapa de dados.
   Map<String, dynamic> toMap() {
     final map = <String, dynamic>{
       'user_id': userId,
@@ -114,6 +149,7 @@ class TaskModel {
     return map;
   }
 
+  /// Cria uma cópia da instância de [TaskModel] com valores modificados.
   TaskModel copyWith({
     String? id,
     String? userId,

@@ -8,7 +8,6 @@ import 'package:task_manager_app/app/core/env.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:task_manager_app/app/core/notification_service.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
 import 'package:workmanager/workmanager.dart';
 
 import 'app/app_module.dart';
@@ -35,7 +34,7 @@ void main() async {
   // Inicializa timezone e notificações
   tz.initializeTimeZones();
   const AndroidInitializationSettings initializationSettingsAndroid =
-      AndroidInitializationSettings('@mipmap/ic_launcher');
+      AndroidInitializationSettings('logo_app');
 
   const InitializationSettings initializationSettings = InitializationSettings(
     android: initializationSettingsAndroid,

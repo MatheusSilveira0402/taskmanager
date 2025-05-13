@@ -8,6 +8,12 @@ import 'package:task_manager_app/app/modules/stats/widgets/custom_date_picker_bu
 import 'package:task_manager_app/app/modules/stats/widgets/stats_card.dart';
 import 'package:task_manager_app/app/modules/stats/widgets/stats_skeleton.dart';
 
+/// A `StatsPage` é responsável por exibir as estatísticas do usuário,
+/// incluindo gráficos de desempenho, resumo de tarefas, e filtros de data.
+///
+/// Ela utiliza o `StatsProvider` para buscar e exibir dados relacionados
+/// às tarefas criadas, concluídas e pendentes dentro de um intervalo de
+/// datas selecionado.
 class StatsPage extends StatefulWidget {
   const StatsPage({super.key});
 
@@ -16,6 +22,8 @@ class StatsPage extends StatefulWidget {
 }
 
 class _StatsPageState extends State<StatsPage> {
+  /// Instância do provedor de estatísticas, responsável por buscar e gerenciar
+  /// as informações de desempenho e tarefas do usuário.
   late StatsProvider statsProvider;
 
   @override
@@ -26,17 +34,21 @@ class _StatsPageState extends State<StatsPage> {
     final now = DateTime.now();
     final startDate = now.subtract(const Duration(days: 6));
 
+    // Configura o intervalo de datas para as estatísticas.
     statsProvider.setSelectedDate(startDate, now);
     statsProvider.fetchStats();
   }
 
   @override
   Widget build(BuildContext context) {
+    // Assiste ao estado do provedor de estatísticas para atualizar a UI
     final provider = context.watch<StatsProvider>();
 
+    // Exibe um skeleton de carregamento enquanto os dados estão sendo buscados.
     if (provider.loading) {
       return const StatsSkeleton();
     }
+
     return Scaffold(
       body: Stack(
         children: [
@@ -52,30 +64,35 @@ class _StatsPageState extends State<StatsPage> {
               height: context.heightPct(0.4) - 60,
             ),
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 10.0,
-            children: [
-              AppBar(
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                toolbarHeight: 90,
-                titleTextStyle: const TextStyle(fontSize: 40, color: Color(0xFF0f2429)),
-                title: Container(
-                  margin: const EdgeInsets.only(right: 2),
-                  child: const Text("Estatísticas"),
+          SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 20.0,
+              children: [
+                // Barra de app personalizada com título "Estatísticas"
+                AppBar(
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  toolbarHeight: 60,
+                  titleTextStyle: const TextStyle(fontSize: 40, color: Color(0xFF0f2429)),
+                  title: Container(
+                    margin: const EdgeInsets.only(right: 2),
+                    child: const Text("Estatísticas"),
+                  ),
                 ),
-              ),
-              Container(
-                margin: const EdgeInsets.all(12),
-                child: SingleChildScrollView(
+                // Conteúdo da página, incluindo cards de resumo e gráficos
+                Container(
+                  height: context.heightPct(0.8),
+                  margin: const EdgeInsets.all(12),
                   child: Column(
                     spacing: 10.0,
                     children: [
+                      // Exibe a página de perfil do usuário
                       SizedBox(
                         width: context.widthPct(1),
                         child: const ProfilePage(),
                       ),
+                      // Seção de filtros para selecionar o intervalo de datas
                       SingleChildScrollView(
                         child: Padding(
                           padding: const EdgeInsets.all(4.0),
@@ -83,6 +100,7 @@ class _StatsPageState extends State<StatsPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             spacing: 10.0,
                             children: [
+                              // Seção para selecionar a data inicial
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -102,6 +120,7 @@ class _StatsPageState extends State<StatsPage> {
                                       }),
                                 ],
                               ),
+                              // Seção para selecionar a data final
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -125,23 +144,26 @@ class _StatsPageState extends State<StatsPage> {
                           ),
                         ),
                       ),
-                      // Cards de Resumo
+                      // Cards de Resumo com informações sobre as tarefas
                       SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            StatCard(title: 'Criadas', value: provider.total.toString()),
+                            StatCard(
+                                title: 'Criadas', value: provider.total.toString()),
                             StatCard(
                                 title: 'Concluídas',
                                 value: provider.completed.toString()),
                             StatCard(
-                                title: 'Progresso', value: provider.progress.toString()),
+                                title: 'Progresso',
+                                value: provider.progress.toString()),
                             StatCard(
                                 title: 'Pendentes', value: provider.pending.toString()),
                           ],
                         ),
                       ),
+                      // Gráfico de tarefas concluídas por dia
                       Card(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -239,6 +261,7 @@ class _StatsPageState extends State<StatsPage> {
                           ),
                         ),
                       ),
+                      // Progresso geral das tarefas
                       Card(
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
@@ -247,8 +270,8 @@ class _StatsPageState extends State<StatsPage> {
                             children: [
                               const Text(
                                 'Progresso geral',
-                                style:
-                                    TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.w600),
                               ),
                               const SizedBox(height: 8),
                               Text(
@@ -276,9 +299,9 @@ class _StatsPageState extends State<StatsPage> {
                       ),
                     ],
                   ),
-                ),
-              )
-            ],
+                )
+              ],
+            ),
           ),
         ],
       ),

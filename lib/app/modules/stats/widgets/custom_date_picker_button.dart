@@ -28,6 +28,18 @@ class CustomDatePickerButton extends StatelessWidget {
             initialDate: selectedDate ?? DateTime.now(),
             firstDate: DateTime(2000),
             lastDate: DateTime(2100),
+            builder: (context, child) {
+                  return Theme(
+                    data: Theme.of(context).copyWith(
+                      colorScheme: const ColorScheme.light(
+                        primary: Colors.teal, // Cor do círculo selecionado
+                        onPrimary: Colors.white, // Texto dentro do círculo selecionado
+                        onSurface: Colors.black87, // Texto padrão
+                      ), dialogTheme: const DialogThemeData(backgroundColor: Colors.white), // Fundo do calendário
+                    ),
+                    child: child!,
+                  );
+                },
           );
           if (picked != null) {
             onDateSelected(picked);

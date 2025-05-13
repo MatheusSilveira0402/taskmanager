@@ -1,14 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:task_manager_app/app/core/extension_size.dart';
 import 'package:task_manager_app/app/modules/home/models/task_model.dart';
 
+/// Um widget que exibe um cartão de tarefa com informações detalhadas.
+///
+/// O [TaskCard] exibe as informações de uma tarefa, incluindo o título, status, 
+/// data agendada e data de conclusão (se aplicável). Ele também permite que o 
+/// usuário altere o status da tarefa ao clicar no ícone de status ou ao selecionar 
+/// uma opção no menu de opções.
 class TaskCard extends StatelessWidget {
+  /// O modelo de tarefa exibido no cartão.
   final TaskModel task;
+
+  /// Função de callback chamada quando o status da tarefa é alterado.
   final void Function(TaskStatus) onStatusChange;
 
   const TaskCard({super.key, required this.task, required this.onStatusChange});
 
+  /// Retorna a cor associada a um status de tarefa.
   Color _getStatusColor(TaskStatus status) {
     const tealColor = Color(0xFF52B2AD);
     switch (status) {
@@ -22,6 +31,7 @@ class TaskCard extends StatelessWidget {
     }
   }
 
+  /// Retorna o ícone associado a um status de tarefa.
   IconData _getStatusIcon(TaskStatus status) {
     switch (status) {
       case TaskStatus.completed:
@@ -35,6 +45,7 @@ class TaskCard extends StatelessWidget {
     }
   }
 
+  /// Retorna o texto associado a um status de tarefa.
   String _getStatusText(TaskStatus status) {
     switch (status) {
       case TaskStatus.completed:
@@ -48,6 +59,7 @@ class TaskCard extends StatelessWidget {
     }
   }
 
+  /// Formata a hora para o formato de 12 horas (AM/PM).
   String _formatTime(DateTime? dt) {
     if (dt == null) return '';
     final hour = dt.hour > 12 ? dt.hour - 12 : dt.hour;
@@ -56,6 +68,7 @@ class TaskCard extends StatelessWidget {
     return '$hour:$minutes $suffix';
   }
 
+  /// Formata a data no formato dd/MM/yyyy.
   String _formatDate(DateTime? dt) {
     if (dt == null) return '';
     return '${dt.day.toString().padLeft(2, '0')}/${dt.month.toString().padLeft(2, '0')}/${dt.year}';
@@ -76,6 +89,7 @@ class TaskCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              // Ícone de status da tarefa
               GestureDetector(
                 onTap: () {
                   final isCompleted = task.status == TaskStatus.completed;
@@ -95,7 +109,7 @@ class TaskCard extends StatelessWidget {
                   ),
                 ),
               ),
-              // Título e status
+              // Título e status da tarefa
               SizedBox(
                 width: 120,
                 child: Column(
@@ -122,7 +136,7 @@ class TaskCard extends StatelessWidget {
                   ],
                 ),
               ),
-              // Data, hora e menu
+              // Data, hora e menu de opções
               Row(
                 children: [
                   Column(
