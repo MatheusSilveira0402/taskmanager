@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'package:task_manager_app/app/core/init_supabase_user.dart';
 import 'package:task_manager_app/app/modules/stats/provider/profile_provider.dart';
 
 import 'image_edit_result.dart';
@@ -17,6 +16,7 @@ import 'image_editor_dialog.dart';
 /// Ao ser clicado, abre um seletor de imagem ou o editor, dependendo
 /// se já há uma imagem selecionada. Pode carregar uma imagem inicial
 /// a partir de uma URL.
+// ignore: must_be_immutable
 class MovableAvatar extends StatefulWidget {
   /// URL da imagem a ser carregada inicialmente.
   String? imageUrl;

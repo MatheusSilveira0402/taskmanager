@@ -16,9 +16,6 @@ class ProfileStore {
   Future<Map<String, dynamic>> fetchProfile() async {
     // Obtém o ID do usuário autenticado
     final user = await InitSupabaseUser().getUserId();
-    if (user == null) {
-      throw Exception('User is not authenticated');
-    }
 
     final userId = user.id;
     Map<String, dynamic> mapProfile = {};

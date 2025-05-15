@@ -18,7 +18,7 @@ class AppWidget extends StatelessWidget {
       /// Tema global da aplicação, definindo cor primária e fundo.
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        scaffoldBackgroundColor: Color(0xFFEEEEEE),
+        scaffoldBackgroundColor: const Color(0xFFEEEEEE),
       ),
 
       /// Parser de rotas utilizado pelo Flutter Modular.

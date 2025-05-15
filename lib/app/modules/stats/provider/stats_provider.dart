@@ -52,7 +52,7 @@ class StatsProvider extends ChangeNotifier {
       today = stats['today'];
       completedPerDay = List<int>.from(stats['completedPerDay']);
     } catch (e) {
-      print('Erro ao buscar stats: $e'); // Exibe erro no console caso a requisição falhe
+      debugPrint('Erro ao buscar stats: $e'); // Exibe erro no console caso a requisição falhe
     }
 
     loading = false;

@@ -38,8 +38,6 @@ class _ImageEditorDialogState extends State<ImageEditorDialog> {
   /// Escala de exibição da imagem (ajustada ao tamanho do diálogo).
   double _displayImageScale = 1.0;
 
-  /// Posição da imagem no widget (não usada atualmente, reservada para ajustes futuros).
-  Offset _imageOffset = Offset.zero;
 
   @override
   void initState() {

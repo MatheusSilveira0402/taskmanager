@@ -116,7 +116,7 @@ class TaskStore {
 
   /// Exclui uma tarefa do banco de dados.
   ///
-  /// A tarefa é removida da tabela `tasks` com base no ID fornecido.
+  /// A tarefa é removida da tabela `tasks` com base no ID fornecido.v
   Future<void> deleteTask(String id) async {
     return supabase.from('tasks').delete().eq('id', id);
   }

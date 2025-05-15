@@ -35,7 +35,7 @@ class ProfileProvider extends ChangeNotifier {
       email = profile['email'];
       avatar = profile['avatar'] ?? ''; // Se o avatar não existir, define como string vazia
     } catch (e) {
-      print('Error fetching profile: $e'); // Exibe erro no console caso a requisição falhe
+      debugPrint('Error fetching profile: $e'); // Exibe erro no console caso a requisição falhe
     }
 
     loading = false;
