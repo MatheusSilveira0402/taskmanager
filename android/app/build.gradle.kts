@@ -16,7 +16,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.task_manager_app"
+    namespace = "com.afazeres.task_manager_app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "27.0.12077973"
     
@@ -40,7 +40,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.task_manager_app"
+        applicationId = "com.afazeres.task_manager_app"
         minSdk = 23 
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
