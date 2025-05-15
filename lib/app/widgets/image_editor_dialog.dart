@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:task_manager_app/app/core/extension_size.dart';
 import 'package:task_manager_app/app/widgets/custom_button.dart';
 import 'image_edit_result.dart';
 
@@ -24,7 +25,7 @@ class ImageEditorDialog extends StatefulWidget {
 }
 
 class _ImageEditorDialogState extends State<ImageEditorDialog> {
-  final double _cropSize = 190;
+  late double _cropSize =  190;
 
   /// Deslocamento do círculo de recorte sobre a imagem.
   Offset _cropOffset = Offset.zero;
@@ -37,7 +38,6 @@ class _ImageEditorDialogState extends State<ImageEditorDialog> {
 
   /// Escala de exibição da imagem (ajustada ao tamanho do diálogo).
   double _displayImageScale = 1.0;
-
 
   @override
   void initState() {
@@ -52,6 +52,7 @@ class _ImageEditorDialogState extends State<ImageEditorDialog> {
     final data = await _currentImage!.readAsBytes();
     final codec = await ui.instantiateImageCodec(data);
     final frame = await codec.getNextFrame();
+    _cropSize = frame.image.width * 0.5;
     setState(() {
       _decodedImage = frame.image;
 
@@ -87,15 +88,15 @@ class _ImageEditorDialogState extends State<ImageEditorDialog> {
     final canvas = Canvas(pictureRecorder);
 
     // Define o centro e raio do recorte circular.
-    const center = Offset(130.0, 130.0);
-    final radius = _cropSize / 2 + 50;
+    final radius = _cropSize / 2;
+    final center = Offset(_cropSize / 2, _cropSize / 2);
 
     // Define retângulos de origem (na imagem) e destino (no canvas).
     final srcRect = Rect.fromLTWH(
       _cropOffset.dx,
       _cropOffset.dy,
-      _cropSize + 50,
-      _cropSize + 50,
+      _cropSize,
+      _cropSize,
     );
     final dstRect = Rect.fromLTWH(0, 0, _cropSize, _cropSize);
 
@@ -109,9 +110,9 @@ class _ImageEditorDialogState extends State<ImageEditorDialog> {
 
     // Converte para imagem e salva como arquivo.
     final image = await pictureRecorder.endRecording().toImage(
-      _cropSize.toInt(),
-      _cropSize.toInt(),
-    );
+          _cropSize.toInt(),
+          _cropSize.toInt(),
+        );
     final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
 
     if (byteData != null) {
@@ -134,6 +135,7 @@ class _ImageEditorDialogState extends State<ImageEditorDialog> {
       setState(() {
         _currentImage = File(pickedFile.path);
         _cropOffset = Offset.zero;
+        
       });
       await _loadUiImage();
     }
@@ -219,7 +221,7 @@ class _ImageEditorDialogState extends State<ImageEditorDialog> {
 
                 /// Botão de salvar a imagem recortada.
                 SizedBox(
-                  width: 120,
+                  width: context.widthPct(0.2),
                   height: 60,
                   child: CustomButton(
                     onPressed: _decodedImage != null ? _cropAndReturn : () {},
