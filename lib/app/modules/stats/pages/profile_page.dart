@@ -54,7 +54,7 @@ class _ProfilePageState extends State<ProfilePage> {
             Text(
               "Ola, ${provider.name}",
               style: const TextStyle(
-                fontSize: 25,
+                fontSize: 23,
                 fontWeight: FontWeight.w600,
                 color: Color(0xFF00695c),
               ),
@@ -63,7 +63,7 @@ class _ProfilePageState extends State<ProfilePage> {
             Text(
               provider.email,
               style: const TextStyle(
-                fontSize: 15,
+                fontSize: 14,
               ),
             ),
           ],

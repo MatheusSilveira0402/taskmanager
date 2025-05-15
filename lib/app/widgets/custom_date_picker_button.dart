@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager_app/app/core/extension_size.dart';
 
 /// Um botão personalizado para selecionar uma data.
 ///
@@ -86,7 +87,7 @@ class CustomDatePickerButton extends StatelessWidget {
                   selectedDate != null
                       ? '${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}'
                       : label,
-                  style: TextStyle(fontSize: selectedDate != null ? 14 : 12),
+                  style: TextStyle(fontSize: selectedDate != null ? context.widthPct(0.030) : context.widthPct(0.025)),
                 ),
                 const Icon(Icons.calendar_today), // Ícone do calendário
               ],
