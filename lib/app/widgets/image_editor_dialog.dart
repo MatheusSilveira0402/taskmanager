@@ -52,7 +52,7 @@ class _ImageEditorDialogState extends State<ImageEditorDialog> {
     final data = await _currentImage!.readAsBytes();
     final codec = await ui.instantiateImageCodec(data);
     final frame = await codec.getNextFrame();
-    _cropSize = frame.image.width * 0.5;
+    _cropSize = frame.image.width * 0.6;
     setState(() {
       _decodedImage = frame.image;
 
