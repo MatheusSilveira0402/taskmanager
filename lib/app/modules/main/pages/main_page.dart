@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:task_manager_app/app/core/extension_size.dart';
+import 'package:task_manager_app/app/modules/main/widgets/nav_item.dart';
 
 /// `MainPage` é uma página que exibe a interface principal da aplicação,
 /// com um `BottomNavigationBar` para navegar entre as páginas de "Início" e "Estatísticas".
@@ -34,33 +36,59 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Corpo da página, onde a navegação ocorre através do RouterOutlet
-      body: const RouterOutlet(),
-      // BottomNavigationBar para navegação entre as páginas principais
-      bottomNavigationBar: ClipRRect(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(25),
-          topRight: Radius.circular(25),
-        ),
-        child: BottomNavigationBar(
-          currentIndex: currentIndex, // Índice da navegação selecionada
-          onTap: (index) {
-            // Atualiza o índice da navegação e navega para a página correspondente
-            setState(() => currentIndex = index);
-            Future.delayed(const Duration(milliseconds: 30), () {
-              Modular.to.navigate(routes[index]);
-            });
-          },
-          selectedItemColor: const Color(0xFF52B2AD), // Cor do item selecionado
-          unselectedItemColor: const Color(0xFF4f787f), // Cor do item não selecionado
-          elevation: 4, // Sombra do BottomNavigationBar
-          items: const [
-            // Item de navegação para "Início"
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Início'),
-            // Item de navegação para "Estatísticas"
-            BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'Estatísticas'),
-          ],
-        ),
+      body: Stack(
+        children: [
+          // Conteúdo principal da página
+          const RouterOutlet(),
+
+          // Barra personalizada por cima do conteúdo
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: Container(
+              height: context.heightPct(0.1) - 5,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(30),
+                  topRight: Radius.circular(30),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 10,
+                    offset: const Offset(0, -2),
+                  ),
+                ],
+              ),
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  NavItem(
+                    icon: Icons.home,
+                    label: 'Início',
+                    selected: currentIndex == 0,
+                    onTap: () {
+                      setState(() => currentIndex = 0);
+                      Modular.to.navigate(routes[0]);
+                    },
+                  ),
+                  NavItem(
+                    icon: Icons.bar_chart,
+                    label: 'Estatísticas',
+                    selected: currentIndex == 1,
+                    onTap: () {
+                      setState(() => currentIndex = 1);
+                      Modular.to.navigate(routes[1]);
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

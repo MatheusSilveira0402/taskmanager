@@ -46,54 +46,56 @@ class _HomePageState extends State<HomePage> {
     final provider = context.watch<TaskProvider>();
     final signOutProvider = context.watch<SignOutProvider>();
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          // Fundo decorativo da tela
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              decoration: const BoxDecoration(
-                  color: Color.fromARGB(127, 82, 178, 173),
-                  borderRadius: BorderRadius.only(
-                      bottomRight: Radius.circular(30), bottomLeft: Radius.circular(30))),
-              height: context.heightPct(0.4) - 60,
-            ),
-          ),
-          Column(
-            spacing: 18.0,
-            children: [
-              // AppBar personalizada
-              AppBar(
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                toolbarHeight: 90,
-                titleTextStyle: const TextStyle(fontSize: 40, color: Color(0xFF0f2429)),
-                title: const Text("Tarefas"),
-                actions: [
-                  // Ícone de logout
-                  IconButton(
-                    icon: const Icon(Icons.logout, color: Color(0xFF0f2429)),
-                    onPressed: () async {
-                      // Realiza o logout do usuário e navega para a tela de login
-                      await signOutProvider.signOut();
-                      Navigator.of(context)
-                            .pushNamedAndRemoveUntil('/', (route) => false);
-                    },
-                  ),
-                ],
+  return Scaffold(
+      body: SizedBox(
+        height: context.heightPct(1),
+        child: Stack(
+          children: [
+            // Fundo decorativo da tela
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                decoration: const BoxDecoration(
+                    color: Color.fromARGB(127, 82, 178, 173),
+                    borderRadius: BorderRadius.only(
+                        bottomRight: Radius.circular(30), bottomLeft: Radius.circular(30))),
+                height: context.heightPct(0.4),
               ),
-              // Barra de filtros e seleção de data
-              SingleChildScrollView(
-                child: Container(
-                  width: context.widthPct(1),
-                  margin: const EdgeInsets.only(left: 15, right: 15),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: SizedBox(
-                      height: 90,
+            ),
+            Column(
+              children: [
+                // AppBar personalizada
+                AppBar(
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  toolbarHeight: context.heightPct(0.1),
+                  titleTextStyle: const TextStyle(fontSize: 40, color: Color(0xFF0f2429)),
+                  title: const Text("Tarefas"),
+                  scrolledUnderElevation: 0,
+                  actions: [
+                    // Ícone de logout
+                    IconButton(
+                      icon: const Icon(Icons.logout, color: Color(0xFF0f2429)),
+                      onPressed: () async {
+                        // Realiza o logout do usuário e navega para a tela de login
+                        await signOutProvider.signOut();
+                        Navigator.of(context)
+                              .pushNamedAndRemoveUntil('/', (route) => false);
+                      },
+                    ),
+                  ],
+                ),
+                // Barra de filtros e seleção de data
+                SingleChildScrollView(
+                  child: Container( 
+                    width: context.widthPct(1),
+                    height: context.heightPct(0.18),
+                    margin: const EdgeInsets.only(left: 10, right: 10,),
+                    padding: EdgeInsets.only( top: context.heightPct(0.030)),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         spacing: 10.0,
@@ -165,73 +167,73 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
-              ),
-              // Exibição das tarefas (com carregamento e skeletons)
-              Container(
-                height: context.heightPct(0.6) + 30,
-                margin: EdgeInsets.zero,
-                padding: EdgeInsets.zero,
-                child: Builder(
-                  builder: (context) {
-                    // Caso as tarefas ainda estejam sendo carregadas, exibe skeletons
-                    if (provider.loading) {
-                      return ListView.builder(
-                        itemCount: 6, // mostra 6 placeholders enquanto carrega
-                        itemExtent: 100.0,
-                        padding: EdgeInsets.zero,
-                        itemBuilder: (context, index) => const TaskCardSkeleton(),
-                      );
-                    }
-                    final tasks = provider.filteredTasks;
-
-                    // Caso não haja tarefas, exibe uma mensagem
-                    if (tasks.isEmpty) {
-                      return const Center(child: Text('Nenhuma tarefa encontrada.'));
-                    }
-
-                    // Exibe a lista de tarefas
-                    return ListView.builder(
-                      itemCount: tasks.length,
-                      itemExtent: 110.0, // Pode ser ajustado conforme necessário
-                      padding: EdgeInsets.zero, // Remove o padding da lista
-                      itemBuilder: (context, index) {
-                        final task = tasks[index];
-                        // Caso a tarefa esteja sendo atualizada, exibe um skeleton
-                        if (provider.loadingIndividual && task.id == provider.idUpdate) {
-                          return const TaskCardSkeleton();
-                        }
-                        return TaskCard(
-                          task: task,
-                          onStatusChange: (checked) {
-                            if (checked == TaskStatus.delete) {
-                              provider.deleteTask(task.id);
-                            } else {
-                              provider.updateTaskStatus(task.id, checked);
-                            }
-                          },
+                // Exibição das tarefas (com carregamento e skeletons)
+                Container(
+                  height: context.heightPct(0.64),
+                  margin: EdgeInsets.zero,
+                  padding: EdgeInsets.only(bottom: context.heightPct(0.064)),
+                  child: Builder(
+                    builder: (context) {
+                      // Caso as tarefas ainda estejam sendo carregadas, exibe skeletons
+                      if (provider.loading) {
+                        return ListView.builder(
+                          itemCount: 6, // mostra 6 placeholders enquanto carrega
+                          itemExtent: 100.0,
+                          padding: EdgeInsets.zero,
+                          itemBuilder: (context, index) => const TaskCardSkeleton(),
                         );
-                      },
-                    );
-                  },
-                ),
-              )
-            ],
-          ),
-          // Botão flutuante para adicionar novas tarefas
-          Positioned(
-            bottom: 20,
-            right: 20,
-            child: FloatingActionButton(
-              backgroundColor: const Color(0xFF52B2AD),
-              foregroundColor: const Color(0xFF52B2AD),
-              splashColor: const Color(0xFF52B2AD),
-              shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(30))),
-              onPressed: () => Modular.to.pushNamed('/main/home/taskform'),
-              child: const Icon(Icons.add, color: Colors.white),
+                      }
+                      final tasks = provider.filteredTasks;
+        
+                      // Caso não haja tarefas, exibe uma mensagem
+                      if (tasks.isEmpty) {
+                        return const Center(child: Text('Nenhuma tarefa encontrada.'));
+                      }
+        
+                      // Exibe a lista de tarefas
+                      return ListView.builder(
+                        itemCount: tasks.length,
+                        itemExtent: 110.0, // Pode ser ajustado conforme necessário
+                        padding: EdgeInsets.zero, // Remove o padding da lista                 
+                        itemBuilder: (context, index) {
+                          final task = tasks[index];
+                          // Caso a tarefa esteja sendo atualizada, exibe um skeleton
+                          if (provider.loadingIndividual && task.id == provider.idUpdate) {
+                            return const TaskCardSkeleton();
+                          }
+                          return TaskCard(
+                            task: task,
+                            onStatusChange: (checked) {
+                              if (checked == TaskStatus.delete) {
+                                provider.deleteTask(task.id);
+                              } else {
+                                provider.updateTaskStatus(task.id, checked);
+                              }
+                            },
+                          );
+                        },
+                      );
+                    },
+                  ),
+                )
+              ],
             ),
-          ),
-        ],
+            // Botão flutuante para adicionar novas tarefas
+            Positioned(
+              bottom: context.heightPct(0.1)+5,
+              right: 20,
+              child: FloatingActionButton(
+                backgroundColor: const Color(0xFF52B2AD),
+                foregroundColor: const Color(0xFF52B2AD),
+                splashColor: const Color(0xFF52B2AD),
+                shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(30))),
+                onPressed: () => Modular.to.pushNamed('/main/home/taskform'),
+                child: const Icon(Icons.add, color: Colors.white),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

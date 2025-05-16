@@ -61,30 +61,31 @@ class _StatsPageState extends State<StatsPage> {
                   color: Color.fromARGB(127, 82, 178, 173),
                   borderRadius: BorderRadius.only(
                       bottomRight: Radius.circular(30), bottomLeft: Radius.circular(30))),
-              height: context.heightPct(0.4) - 60,
+              height: context.heightPct(0.4),
             ),
           ),
-          SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 20.0,
-              children: [
-                // Barra de app personalizada com título "Estatísticas"
-                AppBar(
-                  backgroundColor: Colors.transparent,
-                  elevation: 0,
-                  toolbarHeight: 60,
-                  titleTextStyle: const TextStyle(fontSize: 40, color: Color(0xFF0f2429)),
-                  title: Container(
-                    margin: const EdgeInsets.only(right: 2),
-                    child: const Text("Estatísticas"),
+          Container(
+            margin: const EdgeInsets.all(10),
+            padding: const EdgeInsets.only(bottom: 50),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 18.0,
+                children: [
+                  // Barra de app personalizada com título "Estatísticas"
+                  AppBar(
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                    toolbarHeight: context.heightPct(0.1),
+                    scrolledUnderElevation: 0,
+                    titleTextStyle: const TextStyle(fontSize: 40, color: Color(0xFF0f2429)),
+                    title: Container(
+                      margin: const EdgeInsets.only(right: 2),
+                      child: const Text("Estatísticas"),
+                    ),
                   ),
-                ),
-                // Conteúdo da página, incluindo cards de resumo e gráficos
-                Container(
-                  height: context.heightPct(0.8),
-                  margin: const EdgeInsets.all(12),
-                  child: Column(
+                  // Conteúdo da página, incluindo cards de resumo e gráficos
+                  Column(
                     spacing: 10.0,
                     children: [
                       // Exibe a página de perfil do usuário
@@ -298,9 +299,9 @@ class _StatsPageState extends State<StatsPage> {
                         ),
                       ),
                     ],
-                  ),
-                )
-              ],
+                  )
+                ],
+              ),
             ),
           ),
         ],

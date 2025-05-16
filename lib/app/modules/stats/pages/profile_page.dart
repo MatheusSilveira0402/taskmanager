@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:task_manager_app/app/core/extension_size.dart';
 import 'package:task_manager_app/app/modules/stats/provider/profile_provider.dart';
 import 'package:task_manager_app/app/widgets/movable_avatar.dart';
 
@@ -40,35 +41,37 @@ class _ProfilePageState extends State<ProfilePage> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.start,
-      spacing: 20,
-      children: [
-        // Exibe o avatar que pode ser movido
-        MovableAvatar(imageUrl: provider.avatar),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Exibe o nome do usuário
-            Text(
-              "Ola, ${provider.name}",
-              style: const TextStyle(
-                fontSize: 23,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFF00695c),
+    return SingleChildScrollView(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        spacing: 20,
+        children: [
+          // Exibe o avatar que pode ser movido
+          MovableAvatar(imageUrl: provider.avatar),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Exibe o nome do usuário
+              Text(
+                "Ola, ${provider.name}",
+                style: TextStyle(
+                  fontSize: context.widthPct(0.050),
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF00695c),
+                ),
               ),
-            ),
-            // Exibe o email do usuário
-            Text(
-              provider.email,
-              style: const TextStyle(
-                fontSize: 14,
+              // Exibe o email do usuário
+              Text(
+                provider.email,
+                style: TextStyle(
+                  fontSize: context.widthPct(0.030),
+                ),
               ),
-            ),
-          ],
-        ),
-      ],
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
