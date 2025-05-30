@@ -9,6 +9,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:task_manager_app/app/core/notification_service.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:workmanager/workmanager.dart';
+import 'package:flutter/services.dart';
 
 import 'app/app_module.dart';
 import 'app/app_widget.dart';
@@ -28,6 +29,12 @@ void main() async {
     isInDebugMode: false, // Defina como false em produção
   );
 
+
+   // Travar orientação para apenas retrato
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
   // Permissão para notificações 
   _requestNotificationPermission();
 

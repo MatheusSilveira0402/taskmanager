@@ -5,6 +5,7 @@ import 'package:task_manager_app/app/core/extension_size.dart';
 import 'package:task_manager_app/app/widgets/movable_avatar.dart';
 import 'package:task_manager_app/app/widgets/custom_button.dart';
 import 'package:task_manager_app/app/widgets/custom_text_field.dart';
+import 'package:task_manager_app/app/core/utils/auth_error_handler.dart';
 import '../stores/auth_store.dart';
 
 /// Página de cadastro de novos usuários.
@@ -41,22 +42,21 @@ class _RegisterPageState extends State<RegisterPage> {
         _emailController.text,
         _passwordController.text,
         _nameController.text,
-        _image, // envia a imagem (se existir)
+        _image,
       );
-
+      // sucesso...
       if (!context.mounted) return;
 
       // Mostra mensagem de sucesso e retorna à tela anterior
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Cadastro realizado com sucesso!')),
       );
-      Modular.to.pop();
+      Modular.to.navigate('/main');
     } catch (e) {
+      final errorMessage = getRegisterErrorMessage(e);
       if (!context.mounted) return;
-
-      // Mostra mensagem de erro caso a requisição falhe
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erro ao cadastrar: $e')),
+        SnackBar(content: Text(errorMessage)),
       );
     }
   }
@@ -135,7 +135,9 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                         CustomButton(
                           text: 'Cadastrar',
-                          onPressed: () => _register(context),
+                          onPressed: () async {
+                            _register(context);
+                          },
                         ),
                       ],
                     ),

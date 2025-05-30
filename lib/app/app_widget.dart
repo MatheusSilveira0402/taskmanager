@@ -23,7 +23,7 @@ class AppWidget extends StatelessWidget {
 
       /// Parser de rotas utilizado pelo Flutter Modular.
       routeInformationParser: Modular.routeInformationParser,
-
+       debugShowCheckedModeBanner: false,
       /// Delegado de rotas utilizado pelo Flutter Modular.
       routerDelegate: Modular.routerDelegate,
     );

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:task_manager_app/app/core/extension_size.dart';
+import 'package:task_manager_app/app/core/utils/auth_error_handler.dart';
 import 'package:task_manager_app/app/widgets/custom_button.dart';
 import 'package:task_manager_app/app/widgets/custom_text_field.dart';
 import '../stores/auth_store.dart';
@@ -14,6 +14,7 @@ class LoginPage extends StatelessWidget {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _authStore = Modular.get<AuthStore>();
+  final _formKey = GlobalKey<FormState>();
 
   LoginPage({super.key});
 
@@ -22,28 +23,19 @@ class LoginPage extends StatelessWidget {
   /// Caso o login seja bem-sucedido, redireciona para a página principal (`/main`).
   /// Em caso de erro, exibe uma mensagem apropriada.
   void _login(BuildContext context) async {
-    try {
-      await _authStore.signIn(_emailController.text, _passwordController.text);
-      Modular.to.navigate('/main');
-    } catch (e) {
-      if (!context.mounted) return;
+    if (_formKey.currentState!.validate()) {
+      try {
+        await _authStore.signIn(_emailController.text, _passwordController.text);
+        Modular.to.navigate('/main');
+      } catch (e) {
+        if (!context.mounted) return;
 
-      String errorMessage = 'Erro ao fazer login. Tente novamente mais tarde.';
+        final errorMessage = getAuthErrorMessage(e);
 
-      if (e is AuthApiException) {
-        if (e.message.contains('Email not confirmed')) {
-          errorMessage =
-              'Seu e-mail ainda não foi confirmado. Verifique sua caixa de entrada.';
-        } else {
-          errorMessage = e.message;
-        }
-      } else {
-        errorMessage = 'Erro inesperado: $e';
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(errorMessage)),
+        );
       }
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(errorMessage)),
-      );
     }
   }
 
@@ -80,62 +72,67 @@ class LoginPage extends StatelessWidget {
                   topRight: Radius.circular(20),
                 ),
               ),
-              child: Container(
-                margin: const EdgeInsets.only(top: 30),
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
+              child: Form(
+                key: _formKey,
+                child: Container(
+                  margin: const EdgeInsets.only(top: 30),
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20),
+                    ),
                   ),
-                ),
-                padding: const EdgeInsets.all(15),
-                width: context.widthPct(1),
-                height: context.heightPct(0.5),
-                child: Column(
-                  spacing: 18.0,
-                  children: [
-                    /// Campo de e-mail
-                    CustomTextField(
-                      controller: _emailController,
-                      label: 'E-mail',
-                      icon: Icons.email_outlined,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Por favor, insira um email';
-                        }
-                        return null;
-                      },
-                    ),
-
-                    /// Campo de senha
-                    CustomTextField(
-                      controller: _passwordController,
-                      label: 'Senha',
-                      icon: Icons.lock_outline,
-                      obscureText: true,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Por favor, insira uma senha';
-                        }
-                        return null;
-                      },
-                    ),
-
-                    /// Botão de login
-                    CustomButton(
-                      text: 'Entrar',
-                      onPressed: () => _login(context),
-                    ),
-
-                    /// Link para a página de registro
-                    TextButton(
-                      onPressed: () => Modular.to.pushNamed('/register'),
-                      child: const Text(
-                        'Criar conta',
-                        style: TextStyle(color: Color(0xFF52B2AD)),
+                  padding: const EdgeInsets.all(15),
+                  width: context.widthPct(1),
+                  height: context.heightPct(0.5),
+                  child: Column(
+                    spacing: 18.0,
+                    children: [
+                      /// Campo de e-mail
+                      CustomTextField(
+                        controller: _emailController,
+                        label: 'E-mail',
+                        icon: Icons.email_outlined,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Por favor, insira um email';
+                          }
+                          return null;
+                        },
                       ),
-                    ),
-                  ],
+
+                      /// Campo de senha
+                      CustomTextField(
+                        controller: _passwordController,
+                        label: 'Senha',
+                        icon: Icons.lock_outline,
+                        obscureText: true,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Por favor, insira uma senha';
+                          }
+                          return null;
+                        },
+                      ),
+
+                      /// Botão de login
+                      CustomButton(
+                        text: 'Entrar',
+                        onPressed: () async {
+                          _login(context);
+                        },
+                      ),
+
+                      /// Link para a página de registro
+                      TextButton(
+                        onPressed: () => Modular.to.pushNamed('/register'),
+                        child: const Text(
+                          'Criar conta',
+                          style: TextStyle(color: Color(0xFF52B2AD)),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

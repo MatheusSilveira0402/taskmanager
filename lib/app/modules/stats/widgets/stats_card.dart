@@ -8,20 +8,22 @@ class StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Colors.white,
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Container(
-        width: 100,
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        child: Column(
-          children: [
-            Text(value,
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 4),
-            Text(title, style: const TextStyle(fontSize: 14, color: Colors.grey)),
-          ],
+    return SizedBox(
+      width: 100,
+      height: 50,
+      child: Card(
+        color: Colors.white,
+        elevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: SizedBox(
+          width: 100,
+          child: Column(
+            children: [
+              Text(value,
+                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+              Text(title, style: const TextStyle(fontSize: 14, color: Colors.grey)),
+            ],
+          ),
         ),
       ),
     );

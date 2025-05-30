@@ -22,7 +22,7 @@ class NavItem extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(16),
-      splashColor: color.withOpacity(0.2),
+      splashColor: color.withValues(alpha: 0.2),
       highlightColor: Colors.transparent,
       child: Column(
         mainAxisSize: MainAxisSize.min,

@@ -46,7 +46,7 @@ class _HomePageState extends State<HomePage> {
     final provider = context.watch<TaskProvider>();
     final signOutProvider = context.watch<SignOutProvider>();
 
-  return Scaffold(
+    return Scaffold(
       body: SizedBox(
         height: context.heightPct(1),
         child: Stack(
@@ -60,7 +60,8 @@ class _HomePageState extends State<HomePage> {
                 decoration: const BoxDecoration(
                     color: Color.fromARGB(127, 82, 178, 173),
                     borderRadius: BorderRadius.only(
-                        bottomRight: Radius.circular(30), bottomLeft: Radius.circular(30))),
+                        bottomRight: Radius.circular(30),
+                        bottomLeft: Radius.circular(30))),
                 height: context.heightPct(0.4),
               ),
             ),
@@ -71,9 +72,8 @@ class _HomePageState extends State<HomePage> {
                   backgroundColor: Colors.transparent,
                   elevation: 0,
                   toolbarHeight: context.heightPct(0.1),
-                  titleTextStyle: const TextStyle(fontSize: 40, color: Color(0xFF0f2429)),
-                  title: const Text("Tarefas"),
                   scrolledUnderElevation: 0,
+                  title: const Text("Minhas Tarefas"),
                   actions: [
                     // Ícone de logout
                     IconButton(
@@ -82,18 +82,21 @@ class _HomePageState extends State<HomePage> {
                         // Realiza o logout do usuário e navega para a tela de login
                         await signOutProvider.signOut();
                         Navigator.of(context)
-                              .pushNamedAndRemoveUntil('/', (route) => false);
+                            .pushNamedAndRemoveUntil('/', (route) => false);
                       },
                     ),
                   ],
                 ),
                 // Barra de filtros e seleção de data
                 SingleChildScrollView(
-                  child: Container( 
+                  child: Container(
                     width: context.widthPct(1),
                     height: context.heightPct(0.18),
-                    margin: const EdgeInsets.only(left: 10, right: 10,),
-                    padding: EdgeInsets.only( top: context.heightPct(0.030)),
+                    margin: const EdgeInsets.only(
+                      left: 10,
+                      right: 10,
+                    ),
+                    padding: EdgeInsets.only(top: context.heightPct(0.030)),
                     child: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(
@@ -122,45 +125,77 @@ class _HomePageState extends State<HomePage> {
                               )
                             ],
                           ),
-                          // Filtro de status de tarefas (Pendente, Em progresso, Concluído, Todos)
-                          FilterChip(
+                          // Filtro de status de tarefas (Todos, Pendente, Em progresso, Concluído)
+                           FilterChip(
+                            showCheckmark: false,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15),
                               side: const BorderSide(color: Colors.transparent),
                             ),
-                            label: const Text('Pendente'),
+                            label: const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.filter_list,),
+                                SizedBox(width: 4),
+                                Text('Todos'),
+                              ],
+                            ),
+                            selected: provider.selectedStatus == null,
+                            onSelected: (_) => provider.setSelectedStatus(null),
+                          ),
+                          FilterChip(
+                            showCheckmark: false,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              side: const BorderSide(color: Colors.transparent),
+                            ),
+                            label: const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.schedule, color: Colors.grey),
+                                SizedBox(width: 4),
+                                Text('Pendente'),
+                              ],
+                            ),
                             selected: provider.selectedStatus == TaskStatus.pending,
                             onSelected: (_) =>
                                 provider.setSelectedStatus(TaskStatus.pending),
                           ),
                           FilterChip(
+                            showCheckmark: false,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15),
                               side: const BorderSide(color: Colors.transparent),
                             ),
-                            label: const Text('Em progresso'),
+                            label: const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.autorenew, color: Color(0xFF52B2AD)),
+                                SizedBox(width: 4),
+                                Text('Em progresso'),
+                              ],
+                            ),
                             selected: provider.selectedStatus == TaskStatus.progress,
                             onSelected: (_) =>
                                 provider.setSelectedStatus(TaskStatus.progress),
                           ),
                           FilterChip(
+                            showCheckmark: false,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15),
                               side: const BorderSide(color: Colors.transparent),
                             ),
-                            label: const Text('Concluído'),
+                            label: const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.check, color: Colors.teal),
+                                SizedBox(width: 4),
+                                Text('Concluído'),
+                              ],
+                            ),
                             selected: provider.selectedStatus == TaskStatus.completed,
                             onSelected: (_) =>
                                 provider.setSelectedStatus(TaskStatus.completed),
-                          ),
-                          FilterChip(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                              side: const BorderSide(color: Colors.transparent),
-                            ),
-                            label: const Text('Todos'),
-                            selected: provider.selectedStatus == null,
-                            onSelected: (_) => provider.setSelectedStatus(null),
                           ),
                         ],
                       ),
@@ -184,21 +219,22 @@ class _HomePageState extends State<HomePage> {
                         );
                       }
                       final tasks = provider.filteredTasks;
-        
+
                       // Caso não haja tarefas, exibe uma mensagem
                       if (tasks.isEmpty) {
                         return const Center(child: Text('Nenhuma tarefa encontrada.'));
                       }
-        
+
                       // Exibe a lista de tarefas
                       return ListView.builder(
                         itemCount: tasks.length,
                         itemExtent: 110.0, // Pode ser ajustado conforme necessário
-                        padding: EdgeInsets.zero, // Remove o padding da lista                 
+                        padding: EdgeInsets.zero, // Remove o padding da lista
                         itemBuilder: (context, index) {
                           final task = tasks[index];
                           // Caso a tarefa esteja sendo atualizada, exibe um skeleton
-                          if (provider.loadingIndividual && task.id == provider.idUpdate) {
+                          if (provider.loadingIndividual &&
+                              task.id == provider.idUpdate) {
                             return const TaskCardSkeleton();
                           }
                           return TaskCard(
@@ -220,7 +256,7 @@ class _HomePageState extends State<HomePage> {
             ),
             // Botão flutuante para adicionar novas tarefas
             Positioned(
-              bottom: context.heightPct(0.1)+5,
+              bottom: context.heightPct(0.1) + 5,
               right: 20,
               child: FloatingActionButton(
                 backgroundColor: const Color(0xFF52B2AD),
@@ -229,7 +265,7 @@ class _HomePageState extends State<HomePage> {
                 shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(30))),
                 onPressed: () => Modular.to.pushNamed('/main/home/taskform'),
-                child: const Icon(Icons.add, color: Colors.white),
+                child: const Icon(Icons.add_task, color: Colors.white),
               ),
             ),
           ],

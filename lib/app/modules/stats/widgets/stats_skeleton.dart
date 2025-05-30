@@ -24,14 +24,6 @@ class StatsSkeleton extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 60),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  "Dashboard",
-                  style: TextStyle(fontSize: 40, color: Color(0xFF0f2429)),
-                ),
-              ),
               const SizedBox(height: 16),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12),

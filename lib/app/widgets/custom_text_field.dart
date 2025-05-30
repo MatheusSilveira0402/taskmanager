@@ -1,30 +1,16 @@
 import 'package:flutter/material.dart';
 
 /// Um campo de texto customizado com ícone, estilo consistente e suporte a validação.
-///
-/// O `CustomTextField` é um `TextFormField` encapsulado que oferece opções para
-/// configuração do ícone, rótulo, tipo de teclado, modo senha e validador,
-/// mantendo um estilo visual unificado em toda a aplicação.
-class CustomTextField extends StatelessWidget {
-  /// Controlador do texto que permite ler e modificar o conteúdo do campo.
+/// Inclui botão de visibilidade se for um campo de senha.
+class CustomTextField extends StatefulWidget {
   final TextEditingController controller;
-
-  /// Texto exibido como rótulo acima do campo.
   final String label;
-
-  /// Ícone exibido à esquerda do campo de texto (opcional).
   final IconData? icon;
-
-  /// Define se o texto será obscurecido (útil para senhas).
   final bool obscureText;
-
-  /// Define o tipo de teclado (ex: texto, número, e-mail, etc.).
   final TextInputType keyboardType;
-
-  /// Função de validação que retorna uma mensagem de erro ou null.
   final FormFieldValidator<String>? validator;
+  final Future<void> Function(String)? onChanged;
 
-  /// Construtor do campo de texto customizado.
   const CustomTextField({
     super.key,
     required this.controller,
@@ -33,18 +19,48 @@ class CustomTextField extends StatelessWidget {
     this.obscureText = false,
     this.keyboardType = TextInputType.text,
     this.validator,
+    this.onChanged,
   });
+
+  @override
+  State<CustomTextField> createState() => _CustomTextFieldState();
+}
+
+class _CustomTextFieldState extends State<CustomTextField> {
+  late bool _isObscured;
+
+  @override
+  void initState() {
+    super.initState();
+    _isObscured = widget.obscureText;
+  }
+
+  void _toggleVisibility() {
+    setState(() {
+      _isObscured = !_isObscured;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      controller: controller,
-      obscureText: obscureText,
-      keyboardType: keyboardType,
-      validator: validator,
+      controller: widget.controller,
+      obscureText: _isObscured,
+      keyboardType: widget.keyboardType,
+      validator: widget.validator,
+      onChanged: widget.onChanged,
       decoration: InputDecoration(
-        labelText: label,
-        prefixIcon: icon != null ? Icon(icon) : null,
+        labelText: widget.label,
+        prefixIcon: widget.icon != null ? Icon(widget.icon) : null,
+        suffixIcon: widget.obscureText
+            ? IconButton(
+                icon: Icon(
+                  _isObscured ? Icons.visibility_off : Icons.visibility,
+                  color: const Color(0xFF52B2AD),
+                ),
+                onPressed: _toggleVisibility,
+              )
+            : null,
         border: const OutlineInputBorder(
           borderSide: BorderSide(color: Colors.transparent),
           borderRadius: BorderRadius.all(Radius.circular(12)),

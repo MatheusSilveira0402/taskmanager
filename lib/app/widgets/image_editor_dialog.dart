@@ -224,7 +224,7 @@ class _ImageEditorDialogState extends State<ImageEditorDialog> {
                   width: context.widthPct(0.2),
                   height: 60,
                   child: CustomButton(
-                    onPressed: _decodedImage != null ? _cropAndReturn : () {},
+                    onPressed: _decodedImage != null ? _cropAndReturn : () async {},
                     text: "Salvar",
                   ),
                 ),

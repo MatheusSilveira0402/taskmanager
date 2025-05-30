@@ -56,7 +56,7 @@ class _MainPageState extends State<MainPage> {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withValues(alpha: 0.1),
                     blurRadius: 10,
                     offset: const Offset(0, -2),
                   ),
@@ -67,8 +67,8 @@ class _MainPageState extends State<MainPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   NavItem(
-                    icon: Icons.home,
-                    label: 'Início',
+                    icon: Icons.list,
+                    label: 'Afazeres',
                     selected: currentIndex == 0,
                     onTap: () {
                       setState(() => currentIndex = 0);
@@ -76,8 +76,8 @@ class _MainPageState extends State<MainPage> {
                     },
                   ),
                   NavItem(
-                    icon: Icons.bar_chart,
-                    label: 'Estatísticas',
+                    icon: Icons.insights,
+                    label: 'Visão Geral',
                     selected: currentIndex == 1,
                     onTap: () {
                       setState(() => currentIndex = 1);

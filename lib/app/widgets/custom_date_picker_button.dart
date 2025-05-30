@@ -89,7 +89,7 @@ class CustomDatePickerButton extends StatelessWidget {
                       : label,
                   style: TextStyle(fontSize: selectedDate != null ? context.widthPct(0.030) : context.widthPct(0.025)),
                 ),
-                const Icon(Icons.calendar_today), // Ícone do calendário
+                const Icon(Icons.calendar_today, color: Color(0xFF00695c),), // Ícone do calendário
               ],
             ),
           ),

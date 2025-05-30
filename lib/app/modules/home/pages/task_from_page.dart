@@ -113,7 +113,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
                   color: Color.fromARGB(127, 82, 178, 173),
                   borderRadius: BorderRadius.only(
                       bottomRight: Radius.circular(30), bottomLeft: Radius.circular(30))),
-              height: context.heightPct(0.4) - 60, // Altura ajustável
+              height: context.heightPct(0.4), // Altura ajustável
             ),
           ),
           Column(
@@ -124,7 +124,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
                 child: AppBar(
                   backgroundColor: Colors.transparent,
                   elevation: 0,
-                  toolbarHeight: 90,
+                  toolbarHeight: context.heightPct(0.1),
                   titleTextStyle: const TextStyle(fontSize: 40, color: Color(0xFF0f2429)),
                   title: Text(isEditing ? 'Editar Tarefa' : 'Nova Tarefa'),
                 ),
@@ -132,7 +132,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
               // Formulário de criação/edição de tarefa
               SingleChildScrollView(
                 child: Container(
-                  height: context.heightPct(0.6),
+                  height: context.heightPct(0.7),
                   margin: const EdgeInsets.only(left: 15, right: 15),
                   child: Form(
                     key: _formKey, // Associa o formulário à chave

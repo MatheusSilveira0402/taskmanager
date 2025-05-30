@@ -66,24 +66,12 @@ class _StatsPageState extends State<StatsPage> {
           ),
           Container(
             margin: const EdgeInsets.all(10),
-            padding: const EdgeInsets.only(bottom: 50),
+            padding: const EdgeInsets.only(bottom: 25, top: 25),
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: 18.0,
                 children: [
-                  // Barra de app personalizada com título "Estatísticas"
-                  AppBar(
-                    backgroundColor: Colors.transparent,
-                    elevation: 0,
-                    toolbarHeight: context.heightPct(0.1),
-                    scrolledUnderElevation: 0,
-                    titleTextStyle: const TextStyle(fontSize: 40, color: Color(0xFF0f2429)),
-                    title: Container(
-                      margin: const EdgeInsets.only(right: 2),
-                      child: const Text("Estatísticas"),
-                    ),
-                  ),
                   // Conteúdo da página, incluindo cards de resumo e gráficos
                   Column(
                     spacing: 10.0,
@@ -264,6 +252,7 @@ class _StatsPageState extends State<StatsPage> {
                       ),
                       // Progresso geral das tarefas
                       Card(
+                        color: Colors.white,
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: Column(
