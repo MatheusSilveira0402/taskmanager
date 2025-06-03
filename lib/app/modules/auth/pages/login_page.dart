@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:task_manager_app/app/core/errors/error_handler_strategy.dart';
 import 'package:task_manager_app/app/core/extension_size.dart';
-import 'package:task_manager_app/app/core/utils/auth_error_handler.dart';
 import 'package:task_manager_app/app/widgets/custom_button.dart';
 import 'package:task_manager_app/app/widgets/custom_text_field.dart';
 import '../stores/auth_store.dart';
@@ -23,15 +23,14 @@ class LoginPage extends StatelessWidget {
   /// Caso o login seja bem-sucedido, redireciona para a página principal (`/main`).
   /// Em caso de erro, exibe uma mensagem apropriada.
   void _login(BuildContext context) async {
+    final errorStrategy = ErrorHandlerStrategy();
     if (_formKey.currentState!.validate()) {
       try {
         await _authStore.signIn(_emailController.text, _passwordController.text);
         Modular.to.navigate('/main');
       } catch (e) {
+        final errorMessage = errorStrategy.handleAuthError(e);
         if (!context.mounted) return;
-
-        final errorMessage = getAuthErrorMessage(e);
-
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(errorMessage)),
         );

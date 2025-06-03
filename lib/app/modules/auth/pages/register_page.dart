@@ -1,11 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:task_manager_app/app/core/errors/error_handler_strategy.dart';
 import 'package:task_manager_app/app/core/extension_size.dart';
 import 'package:task_manager_app/app/widgets/movable_avatar.dart';
 import 'package:task_manager_app/app/widgets/custom_button.dart';
 import 'package:task_manager_app/app/widgets/custom_text_field.dart';
-import 'package:task_manager_app/app/core/utils/auth_error_handler.dart';
 import '../stores/auth_store.dart';
 
 /// Página de cadastro de novos usuários.
@@ -37,6 +37,7 @@ class _RegisterPageState extends State<RegisterPage> {
   /// para o método de cadastro do [AuthStore].
   /// Mostra feedback visual com `SnackBar` sobre sucesso ou erro.
   void _register(BuildContext context) async {
+    final errorStrategy = ErrorHandlerStrategy();
     try {
       await _authStore.signUp(
         _emailController.text,
@@ -53,7 +54,7 @@ class _RegisterPageState extends State<RegisterPage> {
       );
       Modular.to.navigate('/main');
     } catch (e) {
-      final errorMessage = getRegisterErrorMessage(e);
+      final errorMessage = errorStrategy.handleRegisterError(e);
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(errorMessage)),
