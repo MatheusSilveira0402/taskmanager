@@ -5,7 +5,6 @@ import 'package:task_manager_app/app/core/extension_size.dart';
 import 'package:task_manager_app/app/modules/auth/stores/biometric_store.dart';
 import 'package:task_manager_app/app/widgets/custom_button.dart';
 import 'package:task_manager_app/app/widgets/custom_text_field.dart';
-import 'package:task_manager_app/app/widgets/skeleton_circle.dart';
 import '../stores/auth_store.dart';
 import 'package:task_manager_app/app/core/storege_security.dart';
 
@@ -158,7 +157,7 @@ class _LoginPageState extends State<LoginPage> {
                         valueListenable: _loadingBiometric,
                         builder: (context, isLoading, child) {
                           return isLoading
-                              ? const Center(child: CircularProgressIndicator())
+                              ? const Center(child: CircularProgressIndicator(color: Color(0xFF52B2AD),))
                               : CustomButton(
                                   text: 'Entrar',
                                   onPressed: () => _login(context),
