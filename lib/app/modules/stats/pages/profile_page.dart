@@ -3,13 +3,13 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:task_manager_app/app/core/extension_size.dart';
 import 'package:task_manager_app/app/modules/stats/provider/profile_provider.dart';
 import 'package:task_manager_app/app/modules/stats/widgets/profile_skeleton.dart';
-import 'package:task_manager_app/app/widgets/movable_avatar.dart';
+import 'package:task_manager_app/app/modules/stats/widgets/profile_avatar_.dart';
 
 /// A `ProfilePage` é a página que exibe o perfil do usuário, incluindo
-/// informações como nome, email e avatar. A página também permite que o 
+/// informações como nome, email e avatar. A página também permite que o
 /// avatar seja movido na interface.
 ///
-/// Ela utiliza o `ProfileProvider` para carregar os dados do perfil 
+/// Ela utiliza o `ProfileProvider` para carregar os dados do perfil
 /// do usuário e exibe um indicador de carregamento enquanto os dados
 /// estão sendo obtidos.
 class ProfilePage extends StatefulWidget {
@@ -20,7 +20,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  /// `profileProvider` é a instância do provedor de perfil usada para obter 
+  /// `profileProvider` é a instância do provedor de perfil usada para obter
   /// e gerenciar os dados do perfil do usuário.
   late ProfileProvider profileProvider;
 
@@ -49,7 +49,10 @@ class _ProfilePageState extends State<ProfilePage> {
         spacing: 20,
         children: [
           // Exibe o avatar que pode ser movido
-          MovableAvatar(imageUrl: provider.avatar),
+          ProfileAvatar(
+            imageUrl: provider.avatar,
+            onTap: provider.pickAndUploadAvatar,
+          ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager_app/app/core/extension_size.dart';
 
 class StatCard extends StatelessWidget {
   final String title;
@@ -9,19 +10,21 @@ class StatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 100,
+      width: context.widthPct(0.235),
       height: 50,
       child: Card(
         color: Colors.white,
-        elevation: 2,
+        elevation: 4,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: SizedBox(
-          width: 100,
+          width: 60,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(value,
-                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
-              Text(title, style: const TextStyle(fontSize: 14, color: Colors.grey)),
+                  style:  TextStyle(fontSize: context.heightPct(0.017), fontWeight: FontWeight.bold)),
+              Text(title, style: TextStyle(fontSize: context.heightPct(0.017), color: Colors.grey)),
             ],
           ),
         ),

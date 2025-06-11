@@ -72,7 +72,7 @@ class _MainPageState extends State<MainPage> {
                     selected: currentIndex == 0,
                     onTap: () {
                       setState(() => currentIndex = 0);
-                      Modular.to.navigate(routes[0]);
+                      Modular.to.pushNamed(routes[0]);
                     },
                   ),
                   NavItem(
@@ -81,7 +81,7 @@ class _MainPageState extends State<MainPage> {
                     selected: currentIndex == 1,
                     onTap: () {
                       setState(() => currentIndex = 1);
-                      Modular.to.navigate(routes[1]);
+                      Modular.to.pushNamed(routes[1]);
                     },
                   ),
                 ],

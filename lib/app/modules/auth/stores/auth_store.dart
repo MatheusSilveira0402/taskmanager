@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -32,7 +31,7 @@ class AuthStore {
   /// 3. Inserção dos dados do perfil na tabela `user_profiles`;
   ///
   /// Lança uma exceção com mensagem descritiva em caso de erro.
-  Future<void> signUp(String email, String password, String name, [File? avatar]) async {
+  Future<void> signUp(String email, String password, String name, [String? avatar]) async {
     try {
       // Criação da conta
       final response = await supabase.auth.signUp(
@@ -48,29 +47,11 @@ class AuthStore {
       // Pequeno atraso para garantir consistência
       await Future.delayed(const Duration(seconds: 1));
 
-      String avatarUrl = '';
-
-      // Upload do avatar, se fornecido
-      if (avatar != null) {
-        final fileName = '${user.id}.jpg';
-
-        final storageResponse =
-            await supabase.storage.from('avatars').upload(fileName, avatar);
-
-        if (!storageResponse.contains('avatars')) {
-          throw Exception('Erro ao fazer upload do avatar: $storageResponse');
-        }
-
-        // Obtém a URL pública da imagem
-        final urlResponse = supabase.storage.from('avatars').getPublicUrl(fileName);
-        avatarUrl = urlResponse;
-      }
-
       // Insere dados do perfil na tabela user_profiles
       await supabase.from('user_profiles').insert({
         'user_id': user.id,
         'name': name,
-        'avatar': avatarUrl,
+        'avatar': avatar,
       });
     } catch (e) {
       throw Exception('Erro ao cadastrar o usuário: $e');

@@ -1,9 +1,10 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:task_manager_app/app/core/errors/error_handler_strategy.dart';
 import 'package:task_manager_app/app/core/extension_size.dart';
-import 'package:task_manager_app/app/widgets/movable_avatar.dart';
+import 'package:task_manager_app/app/modules/auth/providers/auth_avatar_provider.dart';
+import 'package:task_manager_app/app/modules/auth/widgets/auth_avatar.dart';
+
 import 'package:task_manager_app/app/widgets/custom_button.dart';
 import 'package:task_manager_app/app/widgets/custom_text_field.dart';
 import '../stores/auth_store.dart';
@@ -29,7 +30,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final _authStore = Modular.get<AuthStore>();
 
   // Imagem de perfil selecionada pelo usuário (opcional)
-  File? _image;
+  String? _image;
 
   /// Realiza o processo de cadastro do usuário.
   ///
@@ -38,6 +39,7 @@ class _RegisterPageState extends State<RegisterPage> {
   /// Mostra feedback visual com `SnackBar` sobre sucesso ou erro.
   void _register(BuildContext context) async {
     final errorStrategy = ErrorHandlerStrategy();
+    _image = Modular.get<AuthAvatarProvider>().pickedImage;
     try {
       await _authStore.signUp(
         _emailController.text,
@@ -108,7 +110,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
 
                   // Avatar interativo (por enquanto não conectado ao _image)
-                  MovableAvatar(),
+                  const AuthAvatar(),
 
                   // Formulário de cadastro
                   Container(
