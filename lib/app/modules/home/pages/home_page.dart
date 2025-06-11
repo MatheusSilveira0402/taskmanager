@@ -27,15 +27,15 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
 
-    // Inicializa o TaskProvider e configura a data selecionada (se não houver uma).
     taskProvider = context.read<TaskProvider>();
-    if (taskProvider.selectedDate == null) {
-      taskProvider.setSelectedDate(DateTime.now());
-    }
-    // Faz a requisição das tarefas ao iniciar a página.
-    taskProvider.fetchTasks();
 
-    // Verifica e atualiza o status das tarefas a cada 10 segundos.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (taskProvider.selectedDate == null) {
+        taskProvider.setSelectedDate(DateTime.now());
+      }
+      taskProvider.fetchTasks();
+    });
+
     Timer.periodic(const Duration(seconds: 10), (timer) {
       taskProvider.checkAndUpdateTaskStatuses();
     });
@@ -126,7 +126,7 @@ class _HomePageState extends State<HomePage> {
                             ],
                           ),
                           // Filtro de status de tarefas (Todos, Pendente, Em progresso, Concluído)
-                           FilterChip(
+                          FilterChip(
                             showCheckmark: false,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15),
@@ -135,7 +135,9 @@ class _HomePageState extends State<HomePage> {
                             label: const Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(Icons.filter_list,),
+                                Icon(
+                                  Icons.filter_list,
+                                ),
                                 SizedBox(width: 4),
                                 Text('Todos'),
                               ],

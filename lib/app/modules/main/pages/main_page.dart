@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:task_manager_app/app/core/extension_size.dart';
+import 'package:task_manager_app/app/modules/auth/stores/biometric_store.dart';
+import 'package:task_manager_app/app/modules/auth/widgets/auth_modal.dart';
 import 'package:task_manager_app/app/modules/main/widgets/nav_item.dart';
 
 /// `MainPage` é uma página que exibe a interface principal da aplicação,
@@ -17,6 +19,7 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   // Índice atual do BottomNavigationBar
   int currentIndex = 0;
+  final _biometricStore = Modular.get<BiometricAuthStore>();
 
   // Lista de rotas associadas aos itens do BottomNavigationBar
   final routes = [
@@ -31,6 +34,9 @@ class _MainPageState extends State<MainPage> {
     Future.delayed(const Duration(milliseconds: 10), () {
       Modular.to.navigate('/main/home/');
     });
+    if (!context.mounted) return;
+    // Mostra modal para habilitar a biometria apenas uma vez
+    showBiometricModal(context, _biometricStore);
   }
 
   @override

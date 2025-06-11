@@ -2,31 +2,84 @@ import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:task_manager_app/app/core/errors/error_handler_strategy.dart';
 import 'package:task_manager_app/app/core/extension_size.dart';
+import 'package:task_manager_app/app/modules/auth/stores/biometric_store.dart';
 import 'package:task_manager_app/app/widgets/custom_button.dart';
 import 'package:task_manager_app/app/widgets/custom_text_field.dart';
+import 'package:task_manager_app/app/widgets/skeleton_circle.dart';
 import '../stores/auth_store.dart';
+import 'package:task_manager_app/app/core/storege_security.dart';
 
-/// Página de login do aplicativo.
-///
-/// Permite que o usuário insira e-mail e senha para autenticação.
-/// Utiliza `Supabase` para login e `Flutter Modular` para navegação.
-class LoginPage extends StatelessWidget {
+/// Página de login do aplicativo (Stateful).
+/// Permite que o usuário insira e‑mail e senha para autenticação.
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+
   final _authStore = Modular.get<AuthStore>();
+  final _biometricStore = Modular.get<BiometricAuthStore>();
   final _formKey = GlobalKey<FormState>();
+  final ValueNotifier<bool> _loadingBiometric = ValueNotifier(false);
 
-  LoginPage({super.key});
+  @override
+  void initState() {
+    super.initState();
+    // Tenta autenticar via biometria (caso esteja habilitada)
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (await _biometricStore.loadBiometricStatus()) {
+        try {
+          _loadingBiometric.value = true;
+          final auth = await _biometricStore.authenticateIfEnabled();
+          if (auth) {
+            Modular.to.pushNamed('/main');
+          } else {
+            _loadingBiometric.value = false;
+          }
+        } catch (e) {
+          if (!context.mounted) return;
+          // ignore: use_build_context_synchronously
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Algo deu errado no login da biometria")),
+          );
+        }
+      }
+    });
+  }
 
-  /// Função responsável por realizar o login do usuário.
-  ///
-  /// Caso o login seja bem-sucedido, redireciona para a página principal (`/main`).
-  /// Em caso de erro, exibe uma mensagem apropriada.
-  void _login(BuildContext context) async {
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _loadingBiometric.dispose();
+    super.dispose();
+  }
+
+  /// Realiza o login usando Supabase e dispara fluxo de biometria se necessário.
+  Future<void> _login(BuildContext context) async {
     final errorStrategy = ErrorHandlerStrategy();
+
     if (_formKey.currentState!.validate()) {
       try {
-        await _authStore.signIn(_emailController.text, _passwordController.text);
+        await _authStore.signIn(
+          _emailController.text,
+          _passwordController.text,
+        );
+
+        // Salva credenciais em armazenamento seguro
+        await saveSecureData("email", _emailController.text);
+        await saveSecureData("password", _passwordController.text);
+
+        // Atualiza status biométrico e exibe modal, se habilitado
+        await _biometricStore.loadBiometricStatus();
+
+        // Só redireciona após o modal ser fechado
+        if (!context.mounted) return;
         Modular.to.navigate('/main');
       } catch (e) {
         final errorMessage = errorStrategy.handleAuthError(e);
@@ -46,7 +99,7 @@ class LoginPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            /// Cabeçalho com a logo
+            // Cabeçalho
             Container(
               width: context.screenWidth,
               height: context.heightPct(0.6),
@@ -61,7 +114,7 @@ class LoginPage extends StatelessWidget {
               ),
             ),
 
-            /// Card com o formulário de login
+            // Card de login
             Card(
               elevation: 4,
               margin: EdgeInsets.zero,
@@ -75,54 +128,44 @@ class LoginPage extends StatelessWidget {
                 key: _formKey,
                 child: Container(
                   margin: const EdgeInsets.only(top: 30),
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
-                    ),
-                  ),
                   padding: const EdgeInsets.all(15),
                   width: context.widthPct(1),
                   height: context.heightPct(0.5),
                   child: Column(
                     spacing: 18.0,
                     children: [
-                      /// Campo de e-mail
+                      // E-mail
                       CustomTextField(
                         controller: _emailController,
                         label: 'E-mail',
                         icon: Icons.email_outlined,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Por favor, insira um email';
-                          }
-                          return null;
-                        },
+                        validator: (value) => (value == null || value.isEmpty)
+                            ? 'Por favor, insira um email'
+                            : null,
                       ),
-
-                      /// Campo de senha
+                      // Senha
                       CustomTextField(
                         controller: _passwordController,
                         label: 'Senha',
                         icon: Icons.lock_outline,
                         obscureText: true,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Por favor, insira uma senha';
-                          }
-                          return null;
+                        validator: (value) => (value == null || value.isEmpty)
+                            ? 'Por favor, insira uma senha'
+                            : null,
+                      ),
+                      // Botão login
+                      ValueListenableBuilder<bool>(
+                        valueListenable: _loadingBiometric,
+                        builder: (context, isLoading, child) {
+                          return isLoading
+                              ? const Center(child: CircularProgressIndicator())
+                              : CustomButton(
+                                  text: 'Entrar',
+                                  onPressed: () => _login(context),
+                                );
                         },
                       ),
-
-                      /// Botão de login
-                      CustomButton(
-                        text: 'Entrar',
-                        onPressed: () async {
-                          _login(context);
-                        },
-                      ),
-
-                      /// Link para a página de registro
+                      // Link registrar
                       TextButton(
                         onPressed: () => Modular.to.pushNamed('/register'),
                         child: const Text(

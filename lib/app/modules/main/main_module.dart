@@ -1,4 +1,7 @@
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:task_manager_app/app/modules/auth/services/biometric_service.dart';
+import 'package:task_manager_app/app/modules/auth/stores/auth_store.dart';
+import 'package:task_manager_app/app/modules/auth/stores/biometric_store.dart';
 import 'package:task_manager_app/app/modules/main/pages/main_page.dart';
 import '../home/home_module.dart';
 import '../stats/stats_module.dart';
@@ -10,6 +13,13 @@ import '../stats/stats_module.dart';
 /// Ele configura as rotas principais e os módulos filhos, permitindo uma
 /// navegação modular dentro da aplicação.
 class MainModule extends Module {
+  @override
+  void binds(Injector i) {
+    i.addSingleton(() => AuthStore());
+    i.addSingleton(() => BiometricService());
+    i.addSingleton(() => BiometricAuthStore(i<BiometricService>(), i<AuthStore>()));
+  }
+
   @override
   void routes(RouteManager r) {
     // Configura a rota principal '/' para a página MainPage

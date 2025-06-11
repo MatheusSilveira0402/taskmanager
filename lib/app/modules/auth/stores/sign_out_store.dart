@@ -1,4 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:task_manager_app/app/core/shared_prefences.dart';
+import 'package:task_manager_app/app/core/storege_security.dart';
 
 /// A classe [SignOutStore] gerencia o processo de desconexão do usuário.
 class SignOutStore {
@@ -11,6 +13,8 @@ class SignOutStore {
   /// do usuário, encerrando a sessão ativa.
   Future<void> signOut() async {
     // Chama o método signOut da autenticação do Supabase.
-    await supabase.auth.signOut();
+    await clearSecureData();
+    await removeSharedPrefsKeys(['biometric_enabled', 'first_open']);
+    supabase.auth.signOut();
   }
 }
