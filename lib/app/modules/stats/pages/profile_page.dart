@@ -20,28 +20,16 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  /// `profileProvider` é a instância do provedor de perfil usada para obter
-  /// e gerenciar os dados do perfil do usuário.
-  late ProfileProvider profileProvider;
 
   @override
   void initState() {
     super.initState();
-    // Inicializa o provedor de perfil e faz a requisição para carregar os dados.
-    profileProvider = context.read<ProfileProvider>();
-    profileProvider.fetchProfile();
   }
 
   @override
   Widget build(BuildContext context) {
     // O provider que é assistido para observar mudanças no estado
     final provider = context.watch<ProfileProvider>();
-
-    // Exibe um indicador de carregamento enquanto os dados do perfil são buscados
-    if (provider.loading) {
-      return const ProfileSkeleton();
-    }
-
     return SingleChildScrollView(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,

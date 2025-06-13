@@ -30,10 +30,7 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
-    // Navega automaticamente para a página de "Início" assim que a página for carregada
-    Future.delayed(const Duration(milliseconds: 10), () {
-      Modular.to.navigate('/main/home/');
-    });
+
     if (!context.mounted) return;
     // Mostra modal para habilitar a biometria apenas uma vez
     showBiometricModal(context, _biometricStore);
@@ -77,8 +74,10 @@ class _MainPageState extends State<MainPage> {
                     label: 'Afazeres',
                     selected: currentIndex == 0,
                     onTap: () {
-                      setState(() => currentIndex = 0);
-                      Modular.to.pushNamed(routes[0]);
+                      Modular.to.navigate(routes[0]);
+                      setState(() {
+                        currentIndex = 0;
+                      });
                     },
                   ),
                   NavItem(
@@ -86,8 +85,10 @@ class _MainPageState extends State<MainPage> {
                     label: 'Visão Geral',
                     selected: currentIndex == 1,
                     onTap: () {
-                      setState(() => currentIndex = 1);
-                      Modular.to.pushNamed(routes[1]);
+                      Modular.to.navigate(routes[1]);
+                      setState(() {
+                        currentIndex = 1;
+                      });
                     },
                   ),
                 ],

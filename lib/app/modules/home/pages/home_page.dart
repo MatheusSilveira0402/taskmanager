@@ -71,9 +71,18 @@ class _HomePageState extends State<HomePage> {
                 AppBar(
                   backgroundColor: Colors.transparent,
                   elevation: 0,
+                  automaticallyImplyLeading: false,
                   toolbarHeight: context.heightPct(0.1),
                   scrolledUnderElevation: 0,
-                  title: const Text("Minhas Tarefas"),
+                  title: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Image.asset(
+                      'assets/images/logo.png',
+                      width: 60,
+                      height: 60,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
                   actions: [
                     // Ícone de logout
                     IconButton(

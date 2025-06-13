@@ -62,8 +62,21 @@ class TaskProvider extends ChangeNotifier {
   /// Exibe o estado de carregamento enquanto a requisição está em andamento e, em seguida,
   /// notifica os ouvintes para que a interface seja atualizada com as tarefas obtidas.
   Future<void> fetchTasks() async {
+    if (tasks.isNotEmpty) return;
     loading = true;
     notifyListeners();
+  
+
+    tasks = await _store.fetchTasks();
+
+    loading = false;
+    notifyListeners();
+  }
+
+  Future<void> fetchTasksAction() async {
+    loading = true;
+    notifyListeners();
+  
 
     tasks = await _store.fetchTasks();
 
@@ -76,7 +89,7 @@ class TaskProvider extends ChangeNotifier {
   /// Após adicionar a tarefa, a lista de tarefas é recarregada para refletir as mudanças.
   Future<void> addTask(TaskModel task) async {
     await _store.addTask(task);
-    await fetchTasks();
+    await fetchTasksAction();
   }
 
   /// Atualiza os dados de uma tarefa existente e recarrega a lista de tarefas.
@@ -84,7 +97,7 @@ class TaskProvider extends ChangeNotifier {
   /// Após atualizar a tarefa, a lista de tarefas é recarregada para refletir as mudanças.
   Future<void> updateTask(TaskModel task) async {
     await _store.updateTask(task);
-    await fetchTasks();
+    await fetchTasksAction();
   }
 
   /// Verifica e atualiza o status das tarefas pendentes conforme a data de agendamento.

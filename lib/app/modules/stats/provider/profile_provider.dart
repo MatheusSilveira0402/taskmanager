@@ -21,18 +21,20 @@ class ProfileProvider extends ChangeNotifier {
   String email = ''; // E-mail do usuário
   String avatar = ''; // URL ou caminho do avatar do usuário
   bool loading = false; // Indicador de carregamento durante as requisições
-
+  Map<String, dynamic> profile = {};
   /// Método assíncrono que busca as informações do perfil do usuário
   /// utilizando o `ProfileStore`.
   ///
   /// Ele define as variáveis de estado com os dados retornados e
   /// notifica os ouvintes para atualizar a UI.
   Future<void> fetchProfile() async {
+    
+    if (profile.isNotEmpty) return;
     loading = true;
     notifyListeners();
 
     try {
-      final profile = await _store.fetchProfile();
+      profile = await _store.fetchProfile();
       name = profile['name'];
       email = profile['email'];
       avatar = profile['avatar'] ?? ''; // Se o avatar não existir, define como string vazia

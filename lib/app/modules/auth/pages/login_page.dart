@@ -36,11 +36,12 @@ class _LoginPageState extends State<LoginPage> {
           _loadingBiometric.value = true;
           final auth = await _biometricStore.authenticateIfEnabled();
           if (auth) {
-            Modular.to.pushNamed('/main');
+            Modular.to.navigate('/main/home');
           } else {
             _loadingBiometric.value = false;
           }
         } catch (e) {
+          _loadingBiometric.value = false;
           if (!context.mounted) return;
           // ignore: use_build_context_synchronously
           ScaffoldMessenger.of(context).showSnackBar(
@@ -79,7 +80,7 @@ class _LoginPageState extends State<LoginPage> {
 
         // Só redireciona após o modal ser fechado
         if (!context.mounted) return;
-        Modular.to.navigate('/main');
+        Modular.to.navigate('/main/home');
       } catch (e) {
         final errorMessage = errorStrategy.handleAuthError(e);
         if (!context.mounted) return;

@@ -3,6 +3,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:task_manager_app/app/core/extension_size.dart';
 import 'package:task_manager_app/app/modules/stats/pages/profile_page.dart';
+import 'package:task_manager_app/app/modules/stats/provider/profile_provider.dart';
 import 'package:task_manager_app/app/modules/stats/provider/stats_provider.dart';
 import 'package:task_manager_app/app/modules/stats/widgets/custom_date_picker_button.dart';
 import 'package:task_manager_app/app/modules/stats/widgets/stats_card.dart';
@@ -24,19 +25,17 @@ class StatsPage extends StatefulWidget {
 class _StatsPageState extends State<StatsPage> {
   /// Instância do provedor de estatísticas, responsável por buscar e gerenciar
   /// as informações de desempenho e tarefas do usuário.
-  late StatsProvider statsProvider;
+  StatsProvider statsProvider = Modular.get<StatsProvider>();
+  ProfileProvider profileProvider = Modular.get<ProfileProvider>();
 
   @override
   void initState() {
     super.initState();
-    statsProvider = context.read<StatsProvider>();
 
-    final now = DateTime.now();
-    final startDate = now.subtract(const Duration(days: 6));
-
-    // Configura o intervalo de datas para as estatísticas.
-    statsProvider.setSelectedDate(startDate, now);
-    statsProvider.fetchStats();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      statsProvider.fetchStats();
+      profileProvider.fetchProfile();
+    });
   }
 
   @override
@@ -139,14 +138,12 @@ class _StatsPageState extends State<StatsPage> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            StatCard(
-                                title: 'Criadas', value: provider.total.toString()),
+                            StatCard(title: 'Criadas', value: provider.total.toString()),
                             StatCard(
                                 title: 'Concluídas',
                                 value: provider.completed.toString()),
                             StatCard(
-                                title: 'Progresso',
-                                value: provider.progress.toString()),
+                                title: 'Progresso', value: provider.progress.toString()),
                             StatCard(
                                 title: 'Pendentes', value: provider.pending.toString()),
                           ],
@@ -260,8 +257,8 @@ class _StatsPageState extends State<StatsPage> {
                             children: [
                               const Text(
                                 'Progresso geral',
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.w600),
+                                style:
+                                    TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                               ),
                               const SizedBox(height: 8),
                               Text(

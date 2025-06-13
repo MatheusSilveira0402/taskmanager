@@ -11,6 +11,11 @@ class StatsSkeleton extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
+          AppBar(
+            backgroundColor: Colors.transparent,
+            foregroundColor: Colors.transparent,
+            automaticallyImplyLeading: false,
+          ),
           Container(
             height: 240,
             decoration: const BoxDecoration(

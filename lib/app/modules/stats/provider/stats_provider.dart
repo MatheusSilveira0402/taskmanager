@@ -16,15 +16,16 @@ class StatsProvider extends ChangeNotifier {
   List<int> completedPerDay = [0, 0, 0, 0, 0, 0, 0];
 
   // Variáveis que armazenam as datas de início e fim selecionadas
-  DateTime? _startDate;
-  DateTime? _endDate;
-
+  DateTime? _startDate = DateTime.now().subtract(const Duration(days: 6));
+  DateTime? _endDate = DateTime.now();
+  
   // Getters para acessar as datas de início e fim
   DateTime? get startDate => _startDate;
   DateTime? get endDate => _endDate;
 
   // Indicador de carregamento para mostrar na UI durante requisições
   bool loading = false;
+  Map<String, dynamic> stats = {};
 
   // Variáveis para armazenar os dados das estatísticas
   int total = 0; // Total de tarefas
@@ -39,11 +40,12 @@ class StatsProvider extends ChangeNotifier {
   ///
   /// Atualiza os dados e notifica os ouvintes da mudança.
   Future<void> fetchStats() async {
+    if (stats.isNotEmpty) return;
     loading = true;
     notifyListeners();
 
     try {
-      final stats = await _store.fetchStats(_startDate, _endDate);
+      stats = await _store.fetchStats(_startDate, _endDate);
       total = stats['total'];
       pending = stats['pending'];
       progress = stats['progress'];
@@ -52,7 +54,30 @@ class StatsProvider extends ChangeNotifier {
       today = stats['today'];
       completedPerDay = List<int>.from(stats['completedPerDay']);
     } catch (e) {
-      debugPrint('Erro ao buscar stats: $e'); // Exibe erro no console caso a requisição falhe
+      debugPrint(
+          'Erro ao buscar stats: $e'); // Exibe erro no console caso a requisição falhe
+    }
+
+    loading = false;
+    notifyListeners();
+  }
+
+  Future<void> fetchStatsAction() async {
+    loading = true;
+    notifyListeners();
+
+    try {
+      stats = await _store.fetchStats(_startDate, _endDate);
+      total = stats['total'];
+      pending = stats['pending'];
+      progress = stats['progress'];
+      completed = stats['completed'];
+      overdue = stats['overdue'];
+      today = stats['today'];
+      completedPerDay = List<int>.from(stats['completedPerDay']);
+    } catch (e) {
+      debugPrint(
+          'Erro ao buscar stats: $e'); // Exibe erro no console caso a requisição falhe
     }
 
     loading = false;
@@ -66,6 +91,6 @@ class StatsProvider extends ChangeNotifier {
     _startDate = startDate;
     _endDate = endDate;
     notifyListeners();
-    fetchStats();  // Refaz a busca das estatísticas com as novas datas
+    fetchStatsAction(); // Refaz a busca das estatísticas com as novas datas
   }
 }
