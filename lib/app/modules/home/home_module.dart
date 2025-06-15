@@ -1,10 +1,6 @@
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:task_manager_app/app/modules/home/pages/home_page.dart';
 import 'package:task_manager_app/app/modules/home/pages/task_from_page.dart';
-import 'package:task_manager_app/app/modules/auth/providers/sign_out_provider.dart';
-import 'package:task_manager_app/app/modules/home/providers/task_provider.dart';
-import 'package:task_manager_app/app/modules/auth/stores/sign_out_store.dart';
-import 'package:task_manager_app/app/modules/home/stores/task_store.dart';
 
 /// `HomeModule` é um módulo responsável pela configuração e gerenciamento das dependências e rotas
 /// para a página inicial e a página de formulário de tarefas.
@@ -18,10 +14,7 @@ class HomeModule extends Module {
   /// para o restante da aplicação.
   @override
   void binds(Injector i) {
-    i.addSingleton<SignOutStore>(() => SignOutStore()); // Adiciona o SignOutStore como dependência singleton
-    i.addSingleton<SignOutProvider>(() => SignOutProvider(i.get<SignOutStore>())); // Adiciona o SignOutProvider com o SignOutStore
-    i.addSingleton<TaskStore>(() => TaskStore()); // Adiciona o TaskStore como dependência singleton
-    i.addSingleton<TaskProvider>(() => TaskProvider(i.get<TaskStore>())); // Adiciona o TaskProvider com o TaskStore
+    
   }
 
   /// Define as rotas do módulo, associando URLs às páginas.

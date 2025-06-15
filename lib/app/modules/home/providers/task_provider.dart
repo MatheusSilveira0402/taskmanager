@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:task_manager_app/app/modules/home/models/task_model.dart';
 import 'package:task_manager_app/app/modules/home/stores/task_store.dart';
+import 'package:task_manager_app/app/modules/stats/provider/stats_provider.dart';
 
 /// `TaskProvider` é um provider que gerencia o estado e as operações relacionadas às tarefas.
 /// Ele interage com o `TaskStore` para obter, adicionar, atualizar e excluir tarefas, além de gerenciar filtros de data e status.
 class TaskProvider extends ChangeNotifier {
   final TaskStore _store;
-  TaskProvider(this._store);
+  final StatsProvider _statsProvider;
+  TaskProvider(this._store, this._statsProvider);
 
   // Lista de tarefas
   List<TaskModel> tasks = [];
@@ -89,6 +91,7 @@ class TaskProvider extends ChangeNotifier {
   /// Após adicionar a tarefa, a lista de tarefas é recarregada para refletir as mudanças.
   Future<void> addTask(TaskModel task) async {
     await _store.addTask(task);
+    _statsProvider.fetchStatsAction();
     await fetchTasksAction();
   }
 

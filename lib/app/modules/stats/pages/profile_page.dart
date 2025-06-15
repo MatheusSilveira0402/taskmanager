@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:task_manager_app/app/core/extension_size.dart';
 import 'package:task_manager_app/app/modules/stats/provider/profile_provider.dart';
-import 'package:task_manager_app/app/modules/stats/widgets/profile_skeleton.dart';
 import 'package:task_manager_app/app/modules/stats/widgets/profile_avatar_.dart';
 
 /// A `ProfilePage` é a página que exibe o perfil do usuário, incluindo
