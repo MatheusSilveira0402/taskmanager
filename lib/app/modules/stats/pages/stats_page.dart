@@ -63,11 +63,11 @@ class _StatsPageState extends State<StatsPage> {
           ),
           Container(
             margin: const EdgeInsets.all(10),
-            padding: const EdgeInsets.only(bottom: 25, top: 25),
+            padding: const EdgeInsets.only(bottom: 20, top: 30),
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: 18.0,
+                spacing: 20.0,
                 children: [
                   // Conteúdo da página, incluindo cards de resumo e gráficos
                   Column(
@@ -90,15 +90,19 @@ class _StatsPageState extends State<StatsPage> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Padding(
-                                    padding: EdgeInsets.only(left: 2),
-                                    child: Text("DATA INÍCIO",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            color: Color(0xFF00695c))),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 2),
+                                    child: Text(
+                                      "DATA INÍCIO",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          color: const Color(0xFF00695c),
+                                          fontSize: context.heightPct(0.015)),
+                                    ),
                                   ),
                                   CustomDatePickerButton(
-                                      width: 130,
+                                      width: context.widthPct(0.2),
+                                      height: context.widthPct(0.1),
                                       selectedDate: provider.startDate,
                                       onDateSelected: (startDate) {
                                         provider.setSelectedDate(
@@ -110,15 +114,17 @@ class _StatsPageState extends State<StatsPage> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Padding(
-                                    padding: EdgeInsets.only(left: 2),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 2),
                                     child: Text("DATA FIM",
                                         style: TextStyle(
                                             fontWeight: FontWeight.w600,
-                                            color: Color(0xFF00695c))),
+                                            color: const Color(0xFF00695c),
+                                            fontSize: context.heightPct(0.015))),
                                   ),
                                   CustomDatePickerButton(
-                                      width: 130,
+                                      width: context.widthPct(0.2),
+                                      height: context.widthPct(0.1),
                                       selectedDate: provider.endDate,
                                       onDateSelected: (endDate) {
                                         provider.setSelectedDate(
@@ -158,17 +164,17 @@ class _StatsPageState extends State<StatsPage> {
                           padding:
                               const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
                           child: Column(
+                            spacing: 10,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
+                              Text(
                                 'Tarefas concluídas na semana',
                                 style: TextStyle(
-                                  fontSize: 16,
+                                  fontSize: context.heightPct(0.020),
                                   fontWeight: FontWeight.w500,
                                   color: Colors.black,
                                 ),
                               ),
-                              const SizedBox(height: 12),
                               SizedBox(
                                 height: context.heightPct(0.2),
                                 child: BarChart(
@@ -252,21 +258,20 @@ class _StatsPageState extends State<StatsPage> {
                           padding: const EdgeInsets.all(16.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
+                            spacing: 5,
                             children: [
-                              const Text(
+                              Text(
                                 'Progresso geral',
                                 style:
-                                    TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                                    TextStyle(fontSize: context.heightPct(0.020), fontWeight: FontWeight.w600),
                               ),
-                              const SizedBox(height: 8),
                               Text(
                                 '${provider.total == 0 ? 0 : (provider.completed / provider.total * 100).toStringAsFixed(0)}% concluído',
-                                style: const TextStyle(
-                                    fontSize: 16,
+                                style: TextStyle(
+                                    fontSize: context.heightPct(0.020),
                                     fontWeight: FontWeight.w500,
-                                    color: Color(0xFF52B2AD)),
+                                    color: const Color(0xFF52B2AD)),
                               ),
-                              const SizedBox(height: 8),
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(10),
                                 child: LinearProgressIndicator(

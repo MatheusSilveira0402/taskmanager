@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager_app/app/core/extension_size.dart';
 
 class CustomDatePickerButton extends StatelessWidget {
   final DateTime? selectedDate;
@@ -59,9 +60,9 @@ class CustomDatePickerButton extends StatelessWidget {
               selectedDate != null
                   ? '${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}'
                   : label,
-              style: const TextStyle(fontSize: 14),
+              style: TextStyle(fontSize: context.heightPct(0.012)),
             ),
-            const Icon(Icons.calendar_today, size: 14, color: Color(0xFF00695c),),
+            Icon(Icons.calendar_today, size: context.heightPct(0.017), color: const Color(0xFF00695c), ),
           ],
         ),
       ),

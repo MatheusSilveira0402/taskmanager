@@ -23,8 +23,8 @@ class StatCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(value,
-                  style:  TextStyle(fontSize: context.heightPct(0.017), fontWeight: FontWeight.bold)),
-              Text(title, style: TextStyle(fontSize: context.heightPct(0.017), color: Colors.grey)),
+                  style:  TextStyle(fontSize: context.heightPct(0.015), fontWeight: FontWeight.bold)),
+              Text(title, style: TextStyle(fontSize: context.heightPct(0.015), color: Colors.grey)),
             ],
           ),
         ),

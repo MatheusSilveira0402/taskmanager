@@ -29,7 +29,7 @@ class TaskCard extends StatelessWidget {
       case TaskStatus.pending:
         return Colors.grey;
       case TaskStatus.delete:
-        return Colors.grey;
+        return Colors.red;
     }
   }
 
@@ -74,15 +74,15 @@ class TaskCard extends StatelessWidget {
   }
 
   Color _getPriorityColor(TaskPriority priority) {
-  switch (priority) {
-    case TaskPriority.low:
-      return const Color(0xFF81D4FA); // Azul suave
-    case TaskPriority.medium:
-      return const Color(0xFF52B2AD); // Verde-água (já usado)
-    case TaskPriority.high:
-      return const Color(0xFFE57373); // Coral suave
+    switch (priority) {
+      case TaskPriority.low:
+        return const Color(0xFF81D4FA); // Azul suave
+      case TaskPriority.medium:
+        return const Color(0xFF52B2AD); // Verde-água (já usado)
+      case TaskPriority.high:
+        return const Color(0xFFE57373); // Coral suave
+    }
   }
-}
 
   /// Formata a hora para o formato de 12 horas (AM/PM).
   String _formatTime(DateTime? dt) {
@@ -215,16 +215,21 @@ class TaskCard extends StatelessWidget {
                       PopupMenuButton<TaskStatus>(
                         icon: const Icon(Icons.more_vert),
                         onSelected: onStatusChange,
-                        offset: const Offset(0, -200),
+                        offset: const Offset(0, -130),
                         itemBuilder: (_) => TaskStatus.values
                             .map(
                               (status) => PopupMenuItem(
                                 value: status,
+                                height: 30,
                                 child: Row(
+                                  spacing: 4,
                                   children: [
-                                    status.icon,
-                                    const SizedBox(width: 10),
-                                    Text(_getStatusText(status)),
+                                    Icon(_getStatusIcon(status), color: _getStatusColor(status), size: context.heightPct(0.020),),
+                                    Text(
+                                      _getStatusText(status),
+                                      style:
+                                          TextStyle(fontSize: context.heightPct(0.015)),
+                                    ),
                                   ],
                                 ),
                               ),

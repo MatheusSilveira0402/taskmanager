@@ -134,12 +134,12 @@ class _HomePageState extends State<HomePage> {
                                 CustomDatePickerButton(
                                   selectedDate: provider.selectedDate,
                                   onDateSelected: provider.setSelectedDate,
-                                  width: 80,
-                                  height: 33,
+                                  width: context.widthPct(0.22),
+                                  height: context.widthPct(0.1),
                                 ),
                                 SizedBox(
-                                  width: 80,
-                                  height: 33,
+                                  width: context.widthPct(0.2) + 10,
+                                  height: context.widthPct(0.1) - 3,
                                   child: TextButton(
                                       onPressed: () {
                                         provider.setSelectedDate(null);
@@ -303,13 +303,13 @@ class _HomePageState extends State<HomePage> {
                                 height: 36,
                                 value: TaskSortType.priority,
                                 child: Row(
-                                  spacing: 2,
+                                  spacing: 4,
                                   children: [
-                                    Icon(Icons.flag, size: context.heightPct(0.017), color: Colors.teal),
+                                    Icon(Icons.flag, size: context.heightPct(0.020), color: Colors.teal),
                                     Text(
                                       'Prioridade',
                                       style:
-                                          TextStyle(fontSize: context.heightPct(0.015)),
+                                          TextStyle(fontSize: context.heightPct(0.016)),
                                     ),
                                   ],
                                 ),
@@ -318,15 +318,14 @@ class _HomePageState extends State<HomePage> {
                                 height: 36,
                                 value: TaskSortType.date,
                                 child: Row(
-                                  spacing: 2,
+                                  spacing: 4,
                                   children: [
                                     Icon(Icons.calendar_today,
-                                        size: context.heightPct(0.017), color: Colors.teal),
-                                    const SizedBox(width: 8),
+                                        size: context.heightPct(0.020), color: Colors.teal),
                                     Text(
                                       'Data',
                                       style:
-                                          TextStyle(fontSize: context.heightPct(0.015)),
+                                          TextStyle(fontSize: context.heightPct(0.016)),
                                     ),
                                   ],
                                 ),
@@ -335,14 +334,14 @@ class _HomePageState extends State<HomePage> {
                                 height: 36,
                                 value: TaskSortType.status,
                                 child: Row(
-                                  spacing: 2,
+                                  spacing: 4,
                                   children: [
                                     Icon(Icons.check_circle,
-                                        size: context.heightPct(0.017), color: Colors.teal),
+                                        size: context.heightPct(0.020), color: Colors.teal),
                                     Text(
                                       'Status',
                                       style:
-                                          TextStyle(fontSize: context.heightPct(0.015)),
+                                          TextStyle(fontSize: context.heightPct(0.016)),
                                     ),
                                   ],
                                 ),
