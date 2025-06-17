@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 
 /// Enumeração que representa o status de uma tarefa.
 enum TaskStatus { pending, progress, completed, delete }
