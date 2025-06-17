@@ -26,7 +26,6 @@ class _StatsPageState extends State<StatsPage> {
   /// Instância do provedor de estatísticas, responsável por buscar e gerenciar
   /// as informações de desempenho e tarefas do usuário.
   StatsProvider statsProvider = Modular.get<StatsProvider>();
-  ProfileProvider profileProvider = Modular.get<ProfileProvider>();
 
   @override
   void initState() {
@@ -34,7 +33,6 @@ class _StatsPageState extends State<StatsPage> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       statsProvider.fetchStats();
-      profileProvider.fetchProfile();
     });
   }
 

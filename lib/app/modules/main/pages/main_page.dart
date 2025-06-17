@@ -5,6 +5,7 @@ import 'package:task_manager_app/app/core/extension_size.dart';
 import 'package:task_manager_app/app/modules/auth/stores/biometric_store.dart';
 import 'package:task_manager_app/app/modules/auth/widgets/auth_modal.dart';
 import 'package:task_manager_app/app/modules/main/widgets/nav_item.dart';
+import 'package:task_manager_app/app/modules/stats/provider/profile_provider.dart';
 
 /// `MainPage` é uma página que exibe a interface principal da aplicação,
 /// com um `BottomNavigationBar` para navegar entre as páginas de "Início" e "Estatísticas".
@@ -21,7 +22,7 @@ class _MainPageState extends State<MainPage> {
   // Índice atual do BottomNavigationBar
   int currentIndex = 0;
   final _biometricStore = Modular.get<BiometricAuthStore>();
-
+  ProfileProvider profileProvider = Modular.get<ProfileProvider>();
   // Lista de rotas associadas aos itens do BottomNavigationBar
   final routes = [
     '/main/home/',
@@ -37,6 +38,7 @@ class _MainPageState extends State<MainPage> {
     showBiometricModal(context, _biometricStore);
     Future.delayed(const Duration(microseconds: 100));
     SchedulerBinding.instance.addPostFrameCallback((_) {
+      profileProvider.fetchProfile();
       Modular.to.navigate(routes[0]);
     });
   }
