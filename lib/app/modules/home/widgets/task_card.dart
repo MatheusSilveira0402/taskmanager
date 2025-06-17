@@ -61,6 +61,29 @@ class TaskCard extends StatelessWidget {
     }
   }
 
+  /// Retorna o texto associado a um status de tarefa.
+  String _getProrityText(TaskPriority priotity) {
+    switch (priotity) {
+      case TaskPriority.low:
+        return 'Baixo';
+      case TaskPriority.medium:
+        return 'Médio';
+      case TaskPriority.high:
+        return 'Alto';
+    }
+  }
+
+  Color _getPriorityColor(TaskPriority priority) {
+  switch (priority) {
+    case TaskPriority.low:
+      return const Color(0xFF81D4FA); // Azul suave
+    case TaskPriority.medium:
+      return const Color(0xFF52B2AD); // Verde-água (já usado)
+    case TaskPriority.high:
+      return const Color(0xFFE57373); // Coral suave
+  }
+}
+
   /// Formata a hora para o formato de 12 horas (AM/PM).
   String _formatTime(DateTime? dt) {
     if (dt == null) return '';
@@ -95,26 +118,38 @@ class TaskCard extends StatelessWidget {
               children: [
                 // Ícone de status da tarefa
                 Container(
-                  height: 50,
+                  height: 60,
                   margin: const EdgeInsets.only(left: 15),
-                  child: GestureDetector(
-                    onTap: () {
-                      final isCompleted = task.status == TaskStatus.completed;
-                      final newStatus =
-                          isCompleted ? TaskStatus.pending : TaskStatus.completed;
-                      onStatusChange(newStatus);
-                    },
-                    child: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 300),
-                      transitionBuilder: (child, animation) =>
-                          ScaleTransition(scale: animation, child: child),
-                      child: Icon(
-                        key: ValueKey(task.status),
-                        _getStatusIcon(task.status),
-                        color: _getStatusColor(task.status),
-                        size: context.heightPct(0.055),
+                  child: Column(
+                    children: [
+                      Text(
+                        _getProrityText(task.priority),
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: context.heightPct(0.0135),
+                          color: _getPriorityColor(task.priority),
+                        ),
                       ),
-                    ),
+                      GestureDetector(
+                        onTap: () {
+                          final isCompleted = task.status == TaskStatus.completed;
+                          final newStatus =
+                              isCompleted ? TaskStatus.pending : TaskStatus.completed;
+                          onStatusChange(newStatus);
+                        },
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 300),
+                          transitionBuilder: (child, animation) =>
+                              ScaleTransition(scale: animation, child: child),
+                          child: Icon(
+                            key: ValueKey(task.status),
+                            _getStatusIcon(task.status),
+                            color: _getStatusColor(task.status),
+                            size: context.heightPct(0.055),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 // Título e status da tarefa
@@ -181,48 +216,20 @@ class TaskCard extends StatelessWidget {
                         icon: const Icon(Icons.more_vert),
                         onSelected: onStatusChange,
                         offset: const Offset(0, -200),
-                        itemBuilder: (_) => [
-                          PopupMenuItem(
-                            value: TaskStatus.pending,
-                            child: Row(
-                              children: [
-                                const Icon(Icons.schedule, color: Colors.grey),
-                                const SizedBox(width: 10),
-                                Text(_getStatusText(TaskStatus.pending)),
-                              ],
-                            ),
-                          ),
-                          PopupMenuItem(
-                            value: TaskStatus.progress,
-                            child: Row(
-                              children: [
-                                const Icon(Icons.autorenew, color: Color(0xFF52B2AD)),
-                                const SizedBox(width: 10),
-                                Text(_getStatusText(TaskStatus.progress)),
-                              ],
-                            ),
-                          ),
-                          PopupMenuItem(
-                            value: TaskStatus.completed,
-                            child: Row(
-                              children: [
-                                const Icon(Icons.check, color: Colors.teal),
-                                const SizedBox(width: 10),
-                                Text(_getStatusText(TaskStatus.completed)),
-                              ],
-                            ),
-                          ),
-                          PopupMenuItem(
-                            value: TaskStatus.delete,
-                            child: Row(
-                              children: [
-                                const Icon(Icons.delete_forever, color: Colors.red),
-                                const SizedBox(width: 10),
-                                Text(_getStatusText(TaskStatus.delete)),
-                              ],
-                            ),
-                          ),
-                        ],
+                        itemBuilder: (_) => TaskStatus.values
+                            .map(
+                              (status) => PopupMenuItem(
+                                value: status,
+                                child: Row(
+                                  children: [
+                                    status.icon,
+                                    const SizedBox(width: 10),
+                                    Text(_getStatusText(status)),
+                                  ],
+                                ),
+                              ),
+                            )
+                            .toList(),
                       ),
                     ],
                   ),

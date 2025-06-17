@@ -10,18 +10,27 @@ class TaskProvider extends ChangeNotifier {
   final StatsProvider _statsProvider;
   TaskProvider(this._store, this._statsProvider);
 
+  TaskSortType _sortType = TaskSortType.priority;
+
+  TaskSortType get sortType => _sortType;
+
+  void setSortType(TaskSortType type) {
+    _sortType = type;
+    notifyListeners();
+  }
+
   // Lista de tarefas
   List<TaskModel> tasks = [];
-  
+
   // Estado de carregamento
   bool loading = false;
-  
+
   // ID da tarefa sendo atualizada
   String idUpdate = "";
-  
+
   // Estado de carregamento individual para uma tarefa específica
   bool loadingIndividual = false;
-  
+
   // Filtros de data e status
   DateTime? _selectedDate;
   TaskStatus? _selectedStatus;
@@ -48,7 +57,8 @@ class TaskProvider extends ChangeNotifier {
   ///
   /// Retorna uma lista de tarefas que correspondem aos filtros de data e status aplicados.
   List<TaskModel> get filteredTasks {
-    return tasks.where((task) {
+    // Aplica os filtros de status e data
+    final filtered = tasks.where((task) {
       final matchesStatus = _selectedStatus == null || task.status == _selectedStatus;
       final matchesDate = _selectedDate == null ||
           (task.scheduledAt != null &&
@@ -57,6 +67,25 @@ class TaskProvider extends ChangeNotifier {
               task.scheduledAt!.day == _selectedDate!.day);
       return matchesStatus && matchesDate;
     }).toList();
+
+    // Ordena com base na opção de ordenação selecionada
+    switch (_sortType) {
+      case TaskSortType.priority:
+        filtered.sort((a, b) => b.priority.index.compareTo(a.priority.index));
+        break;
+      case TaskSortType.date:
+        filtered.sort((a, b) {
+          final aDate = a.scheduledAt ?? DateTime.fromMillisecondsSinceEpoch(0);
+          final bDate = b.scheduledAt ?? DateTime.fromMillisecondsSinceEpoch(0);
+          return aDate.compareTo(bDate);
+        });
+        break;
+      case TaskSortType.status:
+        filtered.sort((a, b) => a.status.index.compareTo(b.status.index));
+        break;
+    }
+
+    return filtered;
   }
 
   /// Faz a requisição para buscar todas as tarefas e atualiza a lista de tarefas.
@@ -67,7 +96,6 @@ class TaskProvider extends ChangeNotifier {
     if (tasks.isNotEmpty) return;
     loading = true;
     notifyListeners();
-  
 
     tasks = await _store.fetchTasks();
 
@@ -78,7 +106,6 @@ class TaskProvider extends ChangeNotifier {
   Future<void> fetchTasksAction() async {
     loading = true;
     notifyListeners();
-  
 
     tasks = await _store.fetchTasks();
 

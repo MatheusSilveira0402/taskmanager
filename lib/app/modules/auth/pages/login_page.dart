@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:task_manager_app/app/core/errors/error_handler_strategy.dart';
 import 'package:task_manager_app/app/core/extension_size.dart';
@@ -36,7 +37,9 @@ class _LoginPageState extends State<LoginPage> {
           _loadingBiometric.value = true;
           final auth = await _biometricStore.authenticateIfEnabled();
           if (auth) {
-            Modular.to.navigate('/main/home');
+            SchedulerBinding.instance.addPostFrameCallback((_) {
+              Modular.to.navigate('/main');
+            });
           } else {
             _loadingBiometric.value = false;
           }
@@ -80,7 +83,7 @@ class _LoginPageState extends State<LoginPage> {
 
         // Só redireciona após o modal ser fechado
         if (!context.mounted) return;
-        Modular.to.navigate('/main/home');
+        Modular.to.navigate('/main');
       } catch (e) {
         final errorMessage = errorStrategy.handleAuthError(e);
         if (!context.mounted) return;
@@ -158,7 +161,10 @@ class _LoginPageState extends State<LoginPage> {
                         valueListenable: _loadingBiometric,
                         builder: (context, isLoading, child) {
                           return isLoading
-                              ? const Center(child: CircularProgressIndicator(color: Color(0xFF52B2AD),))
+                              ? const Center(
+                                  child: CircularProgressIndicator(
+                                  color: Color(0xFF52B2AD),
+                                ))
                               : CustomButton(
                                   text: 'Entrar',
                                   onPressed: () => _login(context),

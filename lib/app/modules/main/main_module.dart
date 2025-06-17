@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:task_manager_app/app/modules/auth/providers/sign_out_provider.dart';
 import 'package:task_manager_app/app/modules/auth/services/biometric_service.dart';
@@ -54,8 +55,8 @@ class MainModule extends Module {
         i.get<SignOutStore>())); // Adiciona o SignOutProvider com o SignOutStore
     i.addSingleton<TaskStore>(
         () => TaskStore()); // Adiciona o TaskStore como dependência singleton
-    i.addSingleton<TaskProvider>(() =>
-        TaskProvider(i.get<TaskStore>(), i.get<StatsProvider>()));
+    i.addSingleton<TaskProvider>(
+        () => TaskProvider(i.get<TaskStore>(), i.get<StatsProvider>()));
   }
 
   @override
@@ -67,9 +68,46 @@ class MainModule extends Module {
       // Define os módulos filhos associados à navegação
       children: [
         // Rota para o módulo Home, mapeada para 'home'
-        ModuleRoute('home', module: HomeModule()),
+        ModuleRoute(
+          'home',
+          module: HomeModule(),
+          transition: TransitionType.custom,
+          customTransition: CustomTransition(
+            transitionDuration: const Duration(milliseconds: 300),
+            transitionBuilder: (context, animation, secondaryAnimation, child) {
+              const begin = Offset(1.0, 0.0); // anima da direita
+              const end = Offset.zero;
+              const curve = Curves.ease;
+
+              final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+              final offsetAnimation = animation.drive(tween);
+
+              return SlideTransition(
+                position: offsetAnimation,
+                child: child,
+              );
+            },
+          ),
+        ),
         // Rota para o módulo Stats, mapeada para 'stats'
-        ModuleRoute('stats', module: StatsModule()),
+        ModuleRoute('stats', module: StatsModule(),
+        transition: TransitionType.custom,
+          customTransition: CustomTransition(
+            transitionBuilder: (context, animation, secondaryAnimation, child) {
+              const begin = Offset(-1.0, 0.0); // anima da esquerda
+              const end = Offset.zero;
+              const curve = Curves.ease;
+
+              final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+              final offsetAnimation = animation.drive(tween);
+
+              return SlideTransition(
+                position: offsetAnimation,
+                child: child,
+              );
+            },
+            transitionDuration: const Duration(milliseconds: 300),
+          ),),
       ],
     );
   }

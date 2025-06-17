@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:task_manager_app/app/core/extension_size.dart';
 import 'package:task_manager_app/app/modules/auth/stores/biometric_store.dart';
@@ -34,6 +35,10 @@ class _MainPageState extends State<MainPage> {
     if (!context.mounted) return;
     // Mostra modal para habilitar a biometria apenas uma vez
     showBiometricModal(context, _biometricStore);
+    Future.delayed(const Duration(microseconds: 100));
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      Modular.to.navigate(routes[0]);
+    });
   }
 
   @override

@@ -95,6 +95,32 @@ class _TaskFormPageState extends State<TaskFormPage> {
     }
   }
 
+  /// Retorna o texto associado a um status de tarefa.
+  String _getStatusText(TaskStatus status) {
+    switch (status) {
+      case TaskStatus.completed:
+        return 'Concluído';
+      case TaskStatus.progress:
+        return 'Em progresso';
+      case TaskStatus.pending:
+        return 'Pendente';
+      case TaskStatus.delete:
+        return 'Excluir';
+    }
+  }
+
+  /// Retorna o texto associado a um status de tarefa.
+  String _getProrityText(TaskPriority priotity) {
+    switch (priotity) {
+      case TaskPriority.low:
+        return 'Baixo';
+      case TaskPriority.medium:
+        return 'Médio';
+      case TaskPriority.high:
+        return 'Alto';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     taskProvider = context.watch<TaskProvider>(); // Obtém o provedor de tarefas
@@ -170,7 +196,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
                               .map(
                                 (st) => DropdownMenuItem(
                                   value: st,
-                                  child: Text(st.value.capitalize()),
+                                  child: Text(_getStatusText(st)),
                                 ),
                               )
                               .toList(),
@@ -184,7 +210,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
                               .map(
                                 (p) => DropdownMenuItem(
                                   value: p,
-                                  child: Text(p.value.capitalize()),
+                                  child: Text(_getProrityText(p)),
                                 ),
                               )
                               .toList(),

@@ -35,15 +35,14 @@ class CustomDatePickerButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      // Define a largura e altura do botão, sendo altura fixa de 50
-      width: width,
-      height: height ?? 50,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          // Botão de contorno (OutlinedButton) que abre o calendário
-          OutlinedButton(
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        // Botão de contorno (OutlinedButton) que abre o calendário
+        SizedBox(
+          width: width ?? 100,
+          height: height,
+          child: OutlinedButton(
             onPressed: () async {
               // Exibe o calendário para o usuário escolher a data
               final picked = await showDatePicker(
@@ -87,14 +86,14 @@ class CustomDatePickerButton extends StatelessWidget {
                   selectedDate != null
                       ? '${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}'
                       : label,
-                  style: TextStyle(fontSize: selectedDate != null ? context.widthPct(0.030) : context.widthPct(0.025)),
+                  style: TextStyle(fontSize: selectedDate != null ? context.heightPct(0.012) : context.heightPct(0.010)),
                 ),
-                const Icon(Icons.calendar_today, color: Color(0xFF00695c),), // Ícone do calendário
+                Icon(Icons.calendar_today, color: const Color(0xFF00695c), size: context.heightPct(0.017),), // Ícone do calendário
               ],
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

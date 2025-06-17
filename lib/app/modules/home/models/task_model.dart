@@ -1,9 +1,12 @@
+import 'package:flutter/material.dart';
+
 /// Enumeração que representa o status de uma tarefa.
 enum TaskStatus { pending, progress, completed, delete }
 
 /// Enumeração que representa a prioridade de uma tarefa.
 enum TaskPriority { low, medium, high }
 
+enum TaskSortType { priority, date, status }
 /// Extensão para [TaskStatus] que adiciona funcionalidades extras.
 extension TaskStatusExtension on TaskStatus {
   /// Retorna o valor em formato de string associado ao status da tarefa.
@@ -17,6 +20,19 @@ extension TaskStatusExtension on TaskStatus {
         return 'completed';
       case TaskStatus.delete:
         return 'delete';
+    }
+  }
+
+    Icon get icon {
+    switch (this) {
+      case TaskStatus.pending:
+        return const Icon(Icons.schedule, color: Colors.grey);
+      case TaskStatus.progress:
+        return const Icon(Icons.autorenew, color: Color(0xFF52B2AD));
+      case TaskStatus.completed:
+        return const Icon(Icons.check, color: Colors.teal);
+      case TaskStatus.delete:
+        return const Icon(Icons.delete_forever, color: Colors.red);
     }
   }
 
