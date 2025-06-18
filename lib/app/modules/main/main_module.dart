@@ -75,7 +75,7 @@ class MainModule extends Module {
           customTransition: CustomTransition(
             transitionDuration: const Duration(milliseconds: 300),
             transitionBuilder: (context, animation, secondaryAnimation, child) {
-              const begin = Offset(1.0, 0.0); // anima da direita
+              const begin = Offset(-1.0, 0.0); // anima da direita
               const end = Offset.zero;
               const curve = Curves.ease;
 
@@ -94,7 +94,7 @@ class MainModule extends Module {
         transition: TransitionType.custom,
           customTransition: CustomTransition(
             transitionBuilder: (context, animation, secondaryAnimation, child) {
-              const begin = Offset(-1.0, 0.0); // anima da esquerda
+              const begin = Offset(1.0, 0.0); // anima da esquerda
               const end = Offset.zero;
               const curve = Curves.ease;
 

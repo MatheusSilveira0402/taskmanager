@@ -27,10 +27,12 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final ValueNotifier<bool> _loadingBiometric = ValueNotifier(false);
 
+  bool _showManualLogin = false;
+
   @override
   void initState() {
     super.initState();
-    // Tenta autenticar via biometria (caso esteja habilitada)
+
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (await _biometricStore.loadBiometricStatus()) {
         try {
@@ -42,6 +44,9 @@ class _LoginPageState extends State<LoginPage> {
             });
           } else {
             _loadingBiometric.value = false;
+            setState(() {
+              _showManualLogin = true;
+            });
           }
         } catch (e) {
           _loadingBiometric.value = false;
@@ -50,7 +55,14 @@ class _LoginPageState extends State<LoginPage> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text("Algo deu errado no login da biometria")),
           );
+          setState(() {
+            _showManualLogin = true;
+          });
         }
+      } else {
+        setState(() {
+          _showManualLogin = true;
+        });
       }
     });
   }
@@ -74,14 +86,11 @@ class _LoginPageState extends State<LoginPage> {
           _passwordController.text,
         );
 
-        // Salva credenciais em armazenamento seguro
         await saveSecureData("email", _emailController.text);
         await saveSecureData("password", _passwordController.text);
 
-        // Atualiza status biométrico e exibe modal, se habilitado
         await _biometricStore.loadBiometricStatus();
 
-        // Só redireciona após o modal ser fechado
         if (!context.mounted) return;
         Modular.to.navigate('/main');
       } catch (e) {
@@ -92,6 +101,12 @@ class _LoginPageState extends State<LoginPage> {
         );
       }
     }
+  }
+
+  Future<void> _biometricOrEmail() async {
+    setState(() {
+      _showManualLogin = true;
+    });
   }
 
   @override
@@ -117,7 +132,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
 
-            // Card de login
+            // Card com formulário de login
             Card(
               elevation: 4,
               margin: EdgeInsets.zero,
@@ -131,56 +146,74 @@ class _LoginPageState extends State<LoginPage> {
                 key: _formKey,
                 child: Container(
                   margin: const EdgeInsets.only(top: 30),
-                  padding: const EdgeInsets.all(15),
+                  padding: const EdgeInsets.only(left: 10, right: 10),
                   width: context.widthPct(1),
-                  height: context.heightPct(0.5),
-                  child: Column(
-                    spacing: 18.0,
-                    children: [
-                      // E-mail
-                      CustomTextField(
-                        controller: _emailController,
-                        label: 'E-mail',
-                        icon: Icons.email_outlined,
-                        validator: (value) => (value == null || value.isEmpty)
-                            ? 'Por favor, insira um email'
-                            : null,
+                  height: context.heightPct(0.356),
+                  child: _showManualLogin
+                      ? Column(
+                          spacing: 10.0,
+                          children: [
+                            // E-mail
+                            CustomTextField(
+                              controller: _emailController,
+                              label: 'E-mail',
+                              icon: Icons.email_outlined,
+                              validator: (value) => (value == null || value.isEmpty)
+                                  ? 'Por favor, insira um email'
+                                  : null,
+                            ),
+                            // Senha
+                            CustomTextField(
+                              controller: _passwordController,
+                              label: 'Senha',
+                              icon: Icons.lock_outline,
+                              obscureText: true,
+                              validator: (value) => (value == null || value.isEmpty)
+                                  ? 'Por favor, insira uma senha'
+                                  : null,
+                            ),
+                            // Botão login
+                            CustomButton(
+                              text: 'Entrar',
+                              onPressed: () => _login(context),
+                            ),
+                            // Link registrar
+                            TextButton(
+                              onPressed: () => Modular.to.pushNamed('/register'),
+                              child: const Text(
+                                'Criar conta',
+                                style: TextStyle(color: Color(0xFF52B2AD)),
+                              ),
+                            ),
+                          ],
+                        )
+                      : // Loading ou botão para escolher login manual
+                      Column(
+                        spacing: 10.0,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ValueListenableBuilder<bool>(
+                              valueListenable: _loadingBiometric,
+                              builder: (context, isLoading, _) {
+                                if (!_showManualLogin && isLoading) {
+                                  return const Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 24),
+                                    child: CircularProgressIndicator(color: Color(0xFF52B2AD)),
+                                  );
+                                }
+                          
+                                if (!_showManualLogin && !isLoading) {
+                                  return CustomButton(
+                                    text: "Entrar com e-mail e senha",
+                                    onPressed: () => _biometricOrEmail(),
+                                  );
+                                }
+                          
+                                return const SizedBox.shrink();
+                              },
+                            ),
+                        ],
                       ),
-                      // Senha
-                      CustomTextField(
-                        controller: _passwordController,
-                        label: 'Senha',
-                        icon: Icons.lock_outline,
-                        obscureText: true,
-                        validator: (value) => (value == null || value.isEmpty)
-                            ? 'Por favor, insira uma senha'
-                            : null,
-                      ),
-                      // Botão login
-                      ValueListenableBuilder<bool>(
-                        valueListenable: _loadingBiometric,
-                        builder: (context, isLoading, child) {
-                          return isLoading
-                              ? const Center(
-                                  child: CircularProgressIndicator(
-                                  color: Color(0xFF52B2AD),
-                                ))
-                              : CustomButton(
-                                  text: 'Entrar',
-                                  onPressed: () => _login(context),
-                                );
-                        },
-                      ),
-                      // Link registrar
-                      TextButton(
-                        onPressed: () => Modular.to.pushNamed('/register'),
-                        child: const Text(
-                          'Criar conta',
-                          style: TextStyle(color: Color(0xFF52B2AD)),
-                        ),
-                      ),
-                    ],
-                  ),
                 ),
               ),
             ),
