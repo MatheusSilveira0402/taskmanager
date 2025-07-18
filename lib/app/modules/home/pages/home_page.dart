@@ -125,34 +125,31 @@ class _HomePageState extends State<HomePage> {
                         spacing: 4,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
-                            margin: const EdgeInsets.only(top: 6),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                // Botão de seleção de data
-                                CustomDatePickerButton(
-                                  selectedDate: provider.selectedDate,
-                                  onDateSelected: provider.setSelectedDate,
-                                  width: context.widthPct(0.22),
-                                  height: context.widthPct(0.1),
-                                ),
-                                SizedBox(
-                                  width: context.widthPct(0.2) + 10,
-                                  height: context.widthPct(0.1) - 3,
-                                  child: TextButton(
-                                      onPressed: () {
-                                        provider.setSelectedDate(null);
-                                      },
-                                      child: Text(
-                                        "Periodo todo",
-                                        style: TextStyle(
-                                            color: const Color(0xFF00695c),
-                                            fontSize: context.heightPct(0.012)),
-                                      )),
-                                ),
-                              ],
-                            ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              // Botão de seleção de data
+                              CustomDatePickerButton(
+                                selectedDate: provider.selectedDate,
+                                onDateSelected: provider.setSelectedDate,
+                                width: context.widthPct(0.22),
+                                height: context.widthPct(0.1),
+                              ),
+                              SizedBox(
+                                width: context.widthPct(0.2) + 10,
+                                height: context.widthPct(0.1) - 3,
+                                child: TextButton(
+                                    onPressed: () {
+                                      provider.setSelectedDate(null);
+                                    },
+                                    child: Text(
+                                      "Periodo todo",
+                                      style: TextStyle(
+                                          color: const Color(0xFF00695c),
+                                          fontSize: context.heightPct(0.012)),
+                                    )),
+                              ),
+                            ],
                           ),
                           // Filtro de status de tarefas (Todos, Pendente, Em progresso, Concluído)
                           Row(
