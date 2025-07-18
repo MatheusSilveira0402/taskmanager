@@ -6,6 +6,8 @@ class CustomTextField extends StatefulWidget {
   final TextEditingController controller;
   final String label;
   final IconData? icon;
+  final IconData? iconButton;
+  final Future<void> Function()? iconButtonOnPressed;
   final bool obscureText;
   final TextInputType keyboardType;
   final FormFieldValidator<String>? validator;
@@ -16,6 +18,8 @@ class CustomTextField extends StatefulWidget {
     required this.controller,
     required this.label,
     this.icon,
+    this.iconButton,
+    this.iconButtonOnPressed,
     this.obscureText = false,
     this.keyboardType = TextInputType.text,
     this.validator,
@@ -60,7 +64,14 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 ),
                 onPressed: _toggleVisibility,
               )
-            : null,
+            : widget.iconButton != null
+                ? IconButton(
+                    onPressed: widget.iconButtonOnPressed!,
+                    icon: Icon(
+                      widget.iconButton,
+                      color: const Color(0xFF52B2AD),
+                    ))
+                : null,
         border: const OutlineInputBorder(
           borderSide: BorderSide(color: Colors.transparent),
           borderRadius: BorderRadius.all(Radius.circular(12)),

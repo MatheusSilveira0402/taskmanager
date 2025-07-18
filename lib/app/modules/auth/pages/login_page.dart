@@ -34,7 +34,20 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (await _biometricStore.loadBiometricStatus()) {
+       _biometric();
+    });
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _loadingBiometric.dispose();
+    super.dispose();
+  }
+
+  Future<void> _biometric() async {
+     if (await _biometricStore.loadBiometricStatus()) {
         try {
           _loadingBiometric.value = true;
           final auth = await _biometricStore.authenticateIfEnabled();
@@ -64,15 +77,6 @@ class _LoginPageState extends State<LoginPage> {
           _showManualLogin = true;
         });
       }
-    });
-  }
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    _loadingBiometric.dispose();
-    super.dispose();
   }
 
   /// Realiza o login usando Supabase e dispara fluxo de biometria se necessário.
@@ -160,6 +164,8 @@ class _LoginPageState extends State<LoginPage> {
                               validator: (value) => (value == null || value.isEmpty)
                                   ? 'Por favor, insira um email'
                                   : null,
+                              iconButton: Icons.fingerprint,
+                              iconButtonOnPressed: _biometric,
                             ),
                             // Senha
                             CustomTextField(
