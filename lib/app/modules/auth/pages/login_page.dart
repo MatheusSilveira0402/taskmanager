@@ -115,12 +115,12 @@ class _LoginPageState extends State<LoginPage> {
       backgroundColor: const Color(0xFF52B2AD),
       body: SingleChildScrollView(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             // Cabeçalho
             Container(
               width: context.screenWidth,
-              height: context.heightPct(0.6),
+              height: context.heightPct(0.55),
               decoration: const BoxDecoration(color: Color(0xFF52B2AD)),
               child: Center(
                 child: Image.asset(
@@ -145,10 +145,9 @@ class _LoginPageState extends State<LoginPage> {
               child: Form(
                 key: _formKey,
                 child: Container(
-                  margin: const EdgeInsets.only(top: 30),
-                  padding: const EdgeInsets.only(left: 10, right: 10),
+                  padding: const EdgeInsets.all(15),
                   width: context.widthPct(1),
-                  height: context.heightPct(0.356),
+                  height: context.heightPct(0.450),
                   child: _showManualLogin
                       ? Column(
                           spacing: 10.0,
